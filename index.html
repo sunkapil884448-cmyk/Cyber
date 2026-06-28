@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Cyber-Tandav OS - Ethical Teaching Only</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Hind:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#00bfff;--accent:#22d3ee;--bg:#020617;--text:#e2e8f0;--danger:#8b0000;--glass:rgba(255,255,255,0.06)}
+*{scrollbar-width:thin;scrollbar-color:var(--primary) transparent}
+body{margin:0;background:radial-gradient(1200px 800px at 50% -20%, #0b1220 0%, #020617 60%, #000 100%);color:var(--text);font-family:'Hind',system-ui;overflow-x:hidden;transition:background .5s,color .5s}
+h1,h2,h3{font-family:'Orbitron',monospace}
+.glass{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.1);box-shadow:0 10px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)}
+.glow-text{text-shadow:0 0 10px var(--primary),0 0 20px var(--primary),0 0 40px var(--accent)}
+.arc-pulse{animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.08);opacity:1}}
+.spin-slow{animation:spin 8s linear infinite}
+.spin-reverse{animation:spin 4s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+canvas#bg{position:fixed;inset:0;z-index:-2}
+.theme-btn{transition:all .3s}
+.theme-btn:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 0 20px var(--primary)}
+.mode-btn.active{background:linear-gradient(135deg,var(--primary),var(--accent));color:#000;font-weight:700}
+.glitch{position:relative}
+[data-theme="evil"] .glitch{animation:glitch 1s infinite}
+@keyframes glitch{0%,100%{text-shadow:0 0 2px #f00}20%{text-shadow:-2px 0 #f00,2px 0 #0ff}40%{transform:skewX(5deg)}}
+.shloka-scroll{position:fixed;top:15%;left:0;width:200%;white-space:nowrap;font-size:3rem;opacity:.05;color:var(--primary);pointer-events:none;z-index:-1;animation:scroll 120s linear infinite;font-family:'Hind'}
+@keyframes scroll{to{transform:translateX(-50%)}}
+#whiteboard{cursor:crosshair}
+.sticky-note{position:absolute;min-width:120px;min-height:120px;padding:8px;background:#fffd8a;color:#000;border-radius:4px;box-shadow:0 4px 12px rgba(40,0,0,.2);font-family:'Hind'}
+.holo-border{position:relative}
+.holo-border::before{content:'';position:absolute;inset:-2px;border-radius:16px;background:conic-gradient(from 0deg,var(--primary),transparent,var(--accent),transparent,var(--primary));filter:blur(8px);opacity:.5;z-index:-1;animation:spin 6s linear infinite}
+.dock-btn{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 30%,var(--primary),#001a33);box-shadow:0 0 20px var(--primary),inset 0 0 10px rgba(255,255,255,.2);transition:all .3s}
+.dock-btn:hover{transform:translateY(-4px) scale(1.1);box-shadow:0 0 30px var(--accent)}
+.particle-evil{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='red'%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") 12 12,crosshair}
+[data-theme="evil"]{--primary:#ff5c5c;--accent:#ff9999;--bg:#2a0000;--text:#ffffff}
+[data-theme="evil"] .glass{background:rgba(255,255,255,0.12);border-color:rgba(255,120,120,0.35);box-shadow:0 0 25px rgba(255,92,92,0.3)}
+[data-theme="evil"] body{background:radial-gradient(1000px 700px at 50% 15%, #5a0000 0%, #220000 50%, #0a0000 100%)}
+[data-theme="attractive"]{--primary:#a855f7;--accent:#ec4899;--bg:#1a001f}
+[data-theme="lovely"]{--primary:#ff69b4;--accent:#ffc0cb;--bg:#2a0015}
+[data-theme="aggressive"]{--primary:#ff4500;--accent:#ff8c00;--bg:#1f0a00}
+[data-theme="suitup"]{--primary:#00bfff;--accent:#0077ff;--bg:#001f3f}
+[data-theme="sanatani"]{--primary:#ff9933;--accent:#ffd700;--bg:#1a0f00}
+[data-theme="scifi"]{--primary:#00ff41;--accent:#00ffff;--bg:#001a00}
+.pc-card{transform-style:preserve-3d;transition:transform .6s}
+.pc-card:hover{transform:rotateY(15deg) rotateX(10deg)}
+.windows-taskbar{background:rgba(0,0,0,.7);backdrop-filter:blur(10px)}
+@media(max-width:768px){.dock-btn{width:48px;height:48px}}
+
+/* === 100X MAX THEME BOOST === */
+#fx2{position:fixed;inset:0;z-index:-1;pointer-events:none}
+#evil-layer{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .5s}
+[data-theme="evil"] #evil-layer{opacity:1}
+.blood-drip{position:absolute;top:-20px;width:3px;height:80px;background:linear-gradient(#ff5c5c,#ff3333,transparent);animation:drip 4s linear infinite;filter:blur(.5px)}
+@keyframes drip{to{transform:translateY(110vh)}}
+.evil-eye{position:absolute;width:40px;height:40px;background:radial-gradient(circle,#fff 40%,#ff5c5c 50%,#2a0000 75%);border-radius:50%;box-shadow:0 0 20px #f00, inset 0 0 10px #000;animation:blink 5s infinite}
+@keyframes blink{0%,90%,100%{transform:scaleY(1)}95%{transform:scaleY(0.1)}}
+.fog{position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(255,90,90,.18),transparent 60%),radial-gradient(circle at 70% 30%,rgba(40,0,0,.2),transparent 50%);animation:fogmove 30s linear infinite}
+@keyframes fogmove{0%{transform:translateX(-10%)}100%{transform:translateX(10%)}}
+
+[data-theme="attractive"] body{background:radial-gradient(800px 600px at 70% 20%,#2a004f 0%,#1a001f 60%,#000 100%)}
+.butterfly{position:fixed;width:24px;height:24px;pointer-events:none;z-index:5;animation:fly 20s linear infinite}
+@keyframes fly{0%{transform:translate(0,100vh) rotate(0deg)}100%{transform:translate(100vw,-20vh) rotate(720deg)}}
+
+[data-theme="lovely"] body{background:radial-gradient(1000px 700px at 50% 0%,#ff1493 0%,#2a0015 50%,#000 100%)}
+.rose-petal{position:fixed;top:-20px;width:18px;height:18px;background:radial-gradient(#ff69b4,#ff1493);border-radius:50% 0 50% 50%;transform:rotate(45deg);animation:fall 12s linear infinite;opacity:.8}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+
+[data-theme="aggressive"] body{background:linear-gradient(#1f0a00,#ff4500,#1f0a00)}
+.lava{position:fixed;bottom:0;left:0;width:100%;height:30%;background:linear-gradient(to top,#ff4500,#ff8c00,transparent);filter:blur(8px);animation:lavaPulse 2s ease-in-out infinite;z-index:-1}
+@keyframes lavaPulse{0%,100%{height:28%}50%{height:35%}}
+.fire-spark{position:fixed;width:4px;height:4px;background:#ff0;border-radius:50%;box-shadow:0 0 10px #ff4500;animation:spark 3s linear infinite}
+
+[data-theme="suitup"] .hud-corner{position:fixed;width:120px;height:120px;border:2px solid var(--primary);pointer-events:none;z-index:50;opacity:.7}
+.hud-tl{top:10px;left:10px;border-right:none;border-bottom:none;box-shadow:0 0 20px var(--primary)}
+.hud-tr{top:10px;right:10px;border-left:none;border-bottom:none;box-shadow:0 0 20px var(--primary)}
+.hud-bl{bottom:80px;left:10px;border-right:none;border-top:none}
+.hud-br{bottom:80px;right:10px;border-left:none;border-top:none}
+.arc-reactor{position:fixed;top:12px;left:50%;transform:translateX(-50%);width:60px;height:60px;border-radius:50%;background:conic-gradient(from 0deg,var(--primary),transparent 30%,var(--accent),transparent 70%,var(--primary));box-shadow:0 0 30px var(--primary), inset 0 0 15px var(--accent);animation:spin 2s linear infinite;z-index:60}
+.scanline{position:fixed;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--primary),transparent);box-shadow:0 0 10px var(--primary);animation:scan 4s linear infinite;z-index:55}
+@keyframes scan{0%{top:0}100%{top:100vh}}
+
+[data-theme="sanatani"] .diya{position:fixed;bottom:90px;width:30px;height:30px;background:radial-gradient(#ffd700,#ff9933);border-radius:50% 50% 50% 50%/60% 60% 40% 40%;box-shadow:0 0 25px #ff9933;animation:flicker 1.5s infinite}
+@keyframes flicker{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.8;transform:scale(1.05)}}
+.om-float{position:fixed;font-size:4rem;color:rgba(255,153,51,.08);animation:omrise 40s linear infinite;pointer-events:none}
+@keyframes omrise{0%{transform:translateY(100vh)}100%{transform:translateY(-20vh)}}
+
+[data-theme="scifi"] .grid3d{position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,65,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,65,.15) 1px,transparent 1px);background-size:50px 50px;transform:perspective(500px) rotateX(60deg);transform-origin:top;animation:gridmove 10s linear infinite;z-index:-1}
+@keyframes gridmove{0%{background-position:0 0}100%{background-position:0 50px}}
+
+/* === 100X MAX ADDITIONS === */
+.blood-splatter{position:fixed;width:120px;height:120px;background:radial-gradient(circle,rgba(139,0,0,.9) 0%,rgba(255,0,0,.6) 30%,transparent 70%);border-radius:50%;filter:blur(2px);animation:splat 0.5s ease-out;pointer-events:none;z-index:4}
+@keyframes splat{0%{transform:scale(0);opacity:1}100%{transform:scale(1.5);opacity:.7}}
+.heart-float{position:fixed;font-size:20px;animation:heartup 8s linear infinite;pointer-events:none;z-index:5}
+@keyframes heartup{0%{transform:translateY(100vh) scale(0.5);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-20vh) scale(1.2);opacity:0}}
+.bokeh{position:fixed;width:60px;height:60px;background:radial-gradient(circle,rgba(255,182,193,.4),transparent);border-radius:50%;filter:blur(10px);animation:bokehfloat 25s linear infinite;pointer-events:none}
+@keyframes bokehfloat{0%{transform:translate(0,100vh)}100%{transform:translate(100px,-20vh)}}
+.ash{position:fixed;width:3px;height:3px;background:#666;border-radius:50%;animation:ashfall 6s linear infinite;pointer-events:none}
+@keyframes ashfall{to{transform:translateY(110vh) translateX(20px)}}
+.mandir-silhouette{position:fixed;bottom:0;left:0;width:100%;height:35%;background:linear-gradient(to top,rgba(255,153,51,.15),transparent);clip-path:polygon(0% 100%,5% 70%,10% 85%,15% 60%,20% 75%,25% 55%,30% 70%,35% 50%,40% 65%,45% 45%,50% 60%,55% 40%,60% 55%,65% 35%,70% 50%,75% 30%,80% 45%,85% 25%,90% 40%,95% 20%,100% 35%,100% 100%);pointer-events:none;z-index:-1}
+.spark{animation:spark 3s linear infinite}
+@keyframes spark{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-100px) scale(0);opacity:0}}
+.holo-text{position:fixed;font-family:'Orbitron';color:rgba(0,255,255,.15);font-size:1.2rem;white-space:nowrap;animation:holoscroll 30s linear infinite;pointer-events:none;z-index:2}
+@keyframes holoscroll{to{transform:translateX(-50%)}}
+.vignette-evil{position:fixed;inset:0;pointer-events:none;z-index:3;background:radial-gradient(circle,transparent 40%,rgba(0,0,0,.8) 80%,rgba(139,0,0,.5) 100%);opacity:0;transition:opacity .5s}
+[data-theme="evil"] .vignette-evil{opacity:1}
+
+</style>
+</head>
+<body data-theme="suitup">
+
+<canvas id="bg"></canvas>
+<canvas id="fx2"></canvas>
+<div class="vignette-evil"></div>
+<div id="evil-layer"><div class="fog"></div></div>
+<div id="hud" class="hidden"><div class="hud-corner hud-tl"></div><div class="hud-corner hud-tr"></div><div class="hud-corner hud-bl"></div><div class="hud-corner hud-br"></div><div class="arc-reactor"></div><div class="scanline"></div></div>
+<div id="attractive-layer"></div>
+<div id="lovely-layer"></div>
+<div id="aggressive-layer"><div class="lava"></div></div>
+<div id="sanatani-layer"></div>
+<div id="scifi-layer"><div class="grid3d"></div></div>
+
+<div id="shloka" class="shloka-scroll hidden">ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं भर्गो देवस्य धीमहि धियो यो नः प्रचोदयात् ॐ ॐ नमः शिवाय ॐ गं गणपतये नमः ॐ सर्वे भवन्तु सुखिनः ॐ</div>
+
+<header class="glass sticky top-0 z-40 flex items-center justify-between px-3 py-2 md:px-6">
+  <div class="flex items-center gap-3">
+    <div class="w-9 h-9 rounded-full bg-cyan-500/20 grid place-items-center arc-pulse" style="box-shadow:0 0 15px var(--primary)">
+      <div class="w-5 h-5 rounded-full bg-cyan-400" style="box-shadow:0 0 10px var(--accent)"></div>
+    </div>
+    <h1 class="glitch text-xl md:text-3xl font-black glow-text tracking-widest">Cyber-Tandav</h1>
+  </div>
+  <div class="flex items-center gap-2 md:gap-4">
+    <div id="onlineStatus" class="text-[10px] md:text-xs px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">ONLINE • Peak Particles</div>
+    <div class="hidden md:block text-amber-300 font-semibold">Radhe Radhe 🙏</div>
+    <button id="labQuick" class="md:hidden text-xs px-2 py-1 glass rounded">LAB</button>
+  </div>
+</header>
+
+<div class="flex flex-wrap gap-1.5 md:gap-2 justify-center p-2">
+  <button class="theme-btn text-[10px] md:text-xs px-2 py-1 rounded-full glass" data-theme="evil">Evil</button>
+  <button class="theme-btn text-[10px] md:text-xs px-2 py-1 rounded-full glass" data-theme="attractive">Attractive</button>
+  <button class="theme-btn text-[10px] md:text-xs px-2 py-1 rounded-full glass" data-theme="lovely">Lovely</button>
+  <button class="theme-btn text-[10px] md:text-xs px-2 py-1 rounded-full glass" data-theme="aggressive">Aggressive</button>
+  <button class="theme-btn text-[10px] md:text-xs px-2 py-1 rounded-full glass" data-theme="suitup">Suit-Up</button>
+  <button class="theme-btn text-[10px] md:text-xs px-2 py-1 rounded-full glass" data-theme="sanatani">Sanatani</button>
+  <button class="theme-btn text-[10px] md:text-xs px-2 py-1 rounded-full glass" data-theme="scifi">Sci-Fi</button>
+</div>
+
+<!-- CYBER SEARCH ENGINE - 6 IN 1 -->
+<div class="flex justify-center px-2 pb-2">
+  <div class="glass rounded-2xl p-2 w-full max-w-4xl flex flex-col md:flex-row items-center gap-2" style="box-shadow:0 0 20px var(--primary)">
+    <div class="flex items-center gap-1 text-cyan-300 font-bold text-xs md:text-sm"><span>🔍</span> CYBER SEARCH</div>
+    <input id="cyberSearchInput" type="text" placeholder="Google • Bing • Yahoo • Wikipedia • DuckDuckGo • Onion - kuch bhi search karo..." class="flex-1 bg-black/50 border border-white/20 rounded-xl px-3 py-1.5 text-sm outline-none focus:border-cyan-400 w-full">
+    <select id="engineSelect" class="bg-black/70 border border-white/20 rounded-xl px-2 py-1.5 text-xs">
+      <option value="google">Google</option>
+      <option value="bing">Bing</option>
+      <option value="yahoo">Yahoo</option>
+      <option value="wiki">Wikipedia</option>
+      <option value="duck">DuckDuckGo</option>
+      <option value="onion">Onion (Ahmia)</option>
+    </select>
+    <button id="searchBtn" class="px-3 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-black font-bold text-xs transition">SEARCH</button>
+    <div class="flex gap-1">
+      <button class="engine-quick w-7 h-7 grid place-items-center glass rounded-lg text-[10px] hover:scale-110" data-eng="google" title="Google">G</button>
+      <button class="engine-quick w-7 h-7 grid place-items-center glass rounded-lg text-[10px] hover:scale-110" data-eng="bing" title="Bing">B</button>
+      <button class="engine-quick w-7 h-7 grid place-items-center glass rounded-lg text-[10px] hover:scale-110" data-eng="duck" title="DuckDuckGo">D</button>
+      <button class="engine-quick w-7 h-7 grid place-items-center glass rounded-lg text-[10px] hover:scale-110" data-eng="wiki" title="Wikipedia">W</button>
+      <button class="engine-quick w-7 h-7 grid place-items-center glass rounded-lg text-[10px] hover:scale-110" data-eng="yahoo" title="Yahoo">Y</button>
+      <button class="engine-quick w-7 h-7 grid place-items-center glass rounded-lg text-[10px] hover:scale-110" data-eng="onion" title="Onion">🧅</button>
+    </div>
+  </div>
+</div>
+<div class="mt-3 pt-2 border-t border-white/10">
+    <div class="text-[10px] opacity-70 mb-1">Quick Apps</div>
+    <div class="grid grid-cols-4 gap-2" id="osApps"></div>
+  </div>
+</div>
+
+<main class="max-w-[1800px] mx-auto p-2 md:p-4 grid grid-cols-1 xl:grid-cols-12 gap-3 md:gap-4 pb-28">
+  <!-- LEFT -->
+  <aside class="xl:col-span-3 space-y-3">
+    <div class="glass rounded-2xl p-3">
+      <h2 class="font-bold mb-2 text-cyan-300">OS Launcher Modes</h2>
+      <div id="modes" class="grid grid-cols-2 gap-2">
+        <button data-mode="hacker" class="mode-btn active text-xs p-2 rounded-lg glass">Ethical Hacker</button>
+        <button data-mode="pentest" class="mode-btn text-xs p-2 rounded-lg glass">Web Pentester</button>
+        <button data-mode="mentor" class="mode-btn text-xs p-2 rounded-lg glass">Mentor</button>
+        <button data-mode="school" class="mode-btn text-xs p-2 rounded-lg glass">School Teacher</button>
+        <button data-mode="college" class="mode-btn text-xs p-2 rounded-lg glass">College Prof</button>
+        <button data-mode="university" class="mode-btn text-xs p-2 rounded-lg glass">Cyber University</button>
+        <button data-mode="friday" class="mode-btn text-xs p-2 rounded-lg glass col-span-2">FRIDAY AI</button>
+      </div>
+    </div>
+
+    <div class="glass rounded-2xl p-3">
+      <div class="flex justify-between items-center mb-2">
+        <h3 class="font-bold text-cyan-300">45 Days Ethical Hacker</h3>
+        <span id="progressText" class="text-xs">0/45</span>
+      </div>
+      <div id="moduleAccordion" class="space-y-1 max-h-[32vh] overflow-auto pr-1"></div>
+    </div>
+
+    <div class="glass rounded-2xl p-3 hidden xl:block">
+      <h3 class="font-bold text-cyan-300 mb-2">Career Roadmap</h3>
+      <div id="roadmap" class="relative pl-6 border-l-2 border-cyan-500/30 space-y-4 text-xs"></div>
+    </div>
+  </aside>
+
+  <!-- CENTER -->
+  <section class="xl:col-span-6 space-y-3">
+    <div class="glass rounded-2xl p-4 holo-border">
+      <div class="flex flex-col md:flex-row items-center gap-4">
+        <div id="arcReactor" class="relative w-28 h-28 md:w-36 md:h-36 shrink-0">
+          <div class="absolute inset-0 rounded-full arc-pulse" style="background:radial-gradient(circle, var(--primary) 20%, transparent 70%)"></div>
+          <div class="absolute inset-3 rounded-full border-2 border-cyan-400/40 spin-slow"></div>
+          <div class="absolute inset-6 rounded-full border border-cyan-300/60 spin-reverse"></div>
+          <div class="absolute inset-9 rounded-full border-2 border-cyan-200/80 spin-slow" style="animation-duration:12s"></div>
+          <div class="absolute inset-0 grid place-items-center font-bold text-cyan-100">TANDAV</div>
+        </div>
+        <div class="flex-1 w-full">
+          <div class="flex justify-between items-center">
+            <h2 id="modeTitle" class="text-lg font-bold">Ethical Hacker Mode</h2>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-red-900/40 text-red-300">Ethical Teaching Only</span>
+          </div>
+          <div id="dashboardWidgets" class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3"></div>
+          <p id="modeDesc" class="text-xs mt-2 opacity-80">Indian IT Act 2000 के अंतर्गत सिर्फ authorized lab में सीखें। कोई भी illegal activity सख्त मना है।</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass rounded-2xl p-3">
+      <div class="flex flex-wrap items-center gap-1.5 mb-2">
+        <select id="tool" class="bg-black/40 text-xs p-1.5 rounded border border-white/10">
+          <option>Pen</option><option>Pencil</option><option>Marker</option><option>Highlighter</option><option>Glass-Pen</option><option>Laser</option><option>Rect</option><option>Circle</option><option>Text</option><option>Duster</option>
+        </select>
+        <input id="color" type="color" value="#22d3ee" class="w-7 h-7 rounded bg-transparent">
+        <input id="size" type="range" min="1" max="40" value="3" class="w-20">
+        <button id="undo" class="text-xs px-2 py-1 glass rounded">Undo</button>
+        <button id="redo" class="text-xs px-2 py-1 glass rounded">Redo</button>
+        <button id="clear" class="text-xs px-2 py-1 glass rounded">Clear</button>
+        <button id="noteBtn" class="text-xs px-2 py-1 glass rounded">Sticky</button>
+        <button id="savePng" class="text-xs px-2 py-1 glass rounded">PNG</button>
+        <button id="savePdf" class="text-xs px-2 py-1 glass rounded">PDF</button>
+      </div>
+      <div class="relative rounded-xl overflow-hidden border border-cyan-500/20" style="box-shadow:inset 0 0 40px rgba(0,255,255,.08)">
+        <canvas id="whiteboard" width="1200" height="500" class="w-full h-[300px] md:h-[380px] bg-black/30 touch-none"></canvas>
+        <div id="stickies" class="absolute inset-0 pointer-events-none"></div>
+        <div id="laserDot" class="absolute w-3 h-3 rounded-full bg-red-500 -translate-x-1/2 -translate-y-1/2 pointer-events-none hidden" style="box-shadow:0 0 15px red"></div>
+      </div>
+      <div class="text-[10px] mt-1 opacity-60">WHITEBOARD PRO • Smooth GPU Drawing</div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-3">
+      <div class="glass rounded-2xl p-3">
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold text-cyan-300">Personal Teacher's Notebook</h3>
+          <div class="flex gap-1">
+            <button id="mdToggle" class="text-[10px] px-2 py-1 glass rounded">MD</button>
+            <button id="exportTxt" class="text-[10px] px-2 py-1 glass rounded">TXT</button>
+            <button id="exportPdfNote" class="text-[10px] px-2 py-1 glass rounded">PDF</button>
+          </div>
+        </div>
+        <textarea id="notes" placeholder="Yahan notes likhein... auto-save hota hai" class="w-full h-28 mt-2 bg-black/40 rounded p-2 text-sm outline-none border border-white/10"></textarea>
+        <div id="notesPreview" class="hidden w-full h-28 mt-2 bg-black/40 rounded p-2 text-sm overflow-auto"></div>
+      </div>
+      <div class="glass rounded-2xl p-3">
+        <h3 class="font-bold text-cyan-300 mb-2">Virtual Spaces</h3>
+        <div class="grid grid-cols-2 gap-2">
+          <button data-space="lab" class="space-btn text-xs p-2 glass rounded">Computer Lab</button>
+          <button data-space="staff" class="space-btn text-xs p-2 glass rounded">Staff Meeting</button>
+          <button data-space="rest" class="space-btn text-xs p-2 glass rounded">Rest Area</button>
+          <button data-space="library" class="space-btn text-xs p-2 glass rounded">Library</button>
+        </div>
+        <div class="mt-2 flex items-center gap-2">
+          <label class="text-xs">Ambient</label><input id="ambient" type="checkbox" class="accent-cyan-500">
+          <span id="spaceStatus" class="text-[10px] opacity-70">Ready</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RIGHT -->
+  <aside class="xl:col-span-3 space-y-3">
+    <div class="glass rounded-2xl p-3">
+      <div class="flex justify-between items-center mb-2">
+        <h3 class="font-bold text-cyan-300">LIVE CHAT-BOX</h3>
+        <div class="flex gap-1">
+          <input id="chatSearch" placeholder="Search" class="text-[10px] px-1 py-0.5 rounded bg-black/40 border border-white/10 w-20">
+          <button id="exportChat" class="text-[10px] px-1 glass rounded">Export</button>
+        </div>
+      </div>
+      <div id="chatBox" class="h-[200px] overflow-auto space-y-2 text-xs bg-black/30 rounded p-2 border border-white/5"></div>
+      <div class="flex gap-1 mt-2">
+        <input id="chatInput" placeholder="SQLi kya hota hai?" class="flex-1 text-xs px-2 py-1.5 rounded bg-black/40 border border-white/10 outline-none">
+        <button id="chatSend" class="text-xs px-3 py-1.5 rounded bg-cyan-600 hover:bg-cyan-500 font-semibold">Send</button>
+      </div>
+    </div>
+
+    <div class="glass rounded-2xl p-3">
+      <h3 class="font-bold text-cyan-300 mb-2">Doubt Clearing Desk</h3>
+      <div class="overflow-auto max-h-[160px]">
+        <table class="w-full text-[11px]">
+          <thead class="text-cyan-200"><tr><th class="text-left">Student</th><th>Doubt</th><th>Status</th></tr></thead>
+          <tbody id="doubtBody"></tbody>
+        </table>
+      </div>
+      <button id="addDoubt" class="mt-2 text-[10px] px-2 py-1 glass rounded w-full">+ Add Reply</button>
+    </div>
+
+    <div class="glass rounded-2xl p-3">
+      <div class="flex justify-between">
+        <h3 class="font-bold text-cyan-300">Daily Analysis</h3>
+        <button id="exportCSV" class="text-[10px] px-2 py-0.5 glass rounded">CSV</button>
+      </div>
+      <div class="grid grid-cols-3 gap-2 mt-2" id="studentCircles"></div>
+      <canvas id="weekChart" height="90" class="mt-2"></canvas>
+    </div>
+  </aside>
+</main>
+
+<!-- TEACHER TOOLS -->
+<section class="max-w-[1800px] mx-auto px-2 md:px-4 grid lg:grid-cols-2 gap-4 pb-6">
+  <div class="glass rounded-2xl p-3">
+    <div class="flex flex-wrap gap-2 items-center mb-2">
+      <h3 class="font-bold text-cyan-300">School/College Teacher Mode</h3>
+      <select id="classSelect" class="text-xs bg-black/40 p-1 rounded border border-white/10">
+        <option>Class 3</option><option>Class 4</option><option>Class 5</option><option>Class 6</option><option>Class 7</option><option>Class 8</option><option>Class 9</option><option>Class 10</option><option>Class 11</option><option>Class 12</option>
+      </select>
+      <span id="chapterName" class="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-200">Paint Tiranga</span>
+    </div>
+    <div class="grid md:grid-cols-2 gap-3">
+      <div>
+        <div class="flex justify-between items-center">
+          <h4 class="text-xs font-semibold">Attendance Register</h4>
+          <input id="attDate" type="date" class="text-[10px] bg-black/40 p-1 rounded border border-white/10">
+        </div>
+        <div id="attendance" class="max-h-[180px] overflow-auto mt-1 text-xs bg-black/20 rounded p-1"></div>
+        <button id="saveAtt" class="mt-1 text-[10px] px-2 py-1 glass rounded">Save Attendance</button>
+      </div>
+      <div>
+        <h4 class="text-xs font-semibold mb-1">Student Analysis</h4>
+        <canvas id="radarChart" height="150"></canvas>
+        <canvas id="barChart" height="120" class="mt-2"></canvas>
+      </div>
+    </div>
+    <div class="mt-3">
+      <h4 class="text-xs font-semibold">Time Table (Mon-Sat)</h4>
+      <div id="timetable" class="grid grid-cols-7 gap-1 mt-1 text-[10px]"></div>
+    </div>
+  </div>
+
+  <div class="glass rounded-2xl p-3">
+    <div class="flex justify-between items-center mb-2">
+      <h3 class="font-bold text-cyan-300">Study War - Gamification</h3>
+      <div class="text-xs">XP: <span id="xp" class="text-amber-300 font-bold">1240</span> | Rank: <span class="text-cyan-300">Mentor</span></div>
+    </div>
+    <div class="grid grid-cols-3 gap-2 text-center">
+      <div class="p-2 rounded bg-black/30"><div class="text-[10px] opacity-70">Networking</div><div class="text-lg font-bold text-cyan-300">78%</div></div>
+      <div class="p-2 rounded bg-black/30"><div class="text-[10px] opacity-70">Web Sec</div><div class="text-lg font-bold text-fuchsia-300">84%</div></div>
+      <div class="p-2 rounded bg-black/30"><div class="text-[10px] opacity-70">Linux</div><div class="text-lg font-bold text-emerald-300">91%</div></div>
+    </div>
+    <h4 class="text-xs font-semibold mt-3 mb-1">Leaderboard</h4>
+    <div id="leaderboard" class="text-xs space-y-1"></div>
+    <div class="mt-3 flex gap-2">
+      <button id="openExam" class="flex-1 text-xs py-1.5 rounded bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Exam System</button>
+      <button id="openLab" class="flex-1 text-xs py-1.5 rounded bg-cyan-600 hover:bg-cyan-500 font-semibold">REAL COMPUTER LAB</button>
+    </div>
+    <div class="mt-2">
+      <button id="openProject" class="w-full text-xs py-1.5 rounded bg-violet-600 hover:bg-violet-500 font-semibold animate-pulse">🚀 LIVE PROJECT MODE - Class 12 Website</button>
+    </div>
+    <div class="mt-2">
+      <button id="openDiary" class="w-full text-xs py-1.5 rounded bg-amber-600 hover:bg-amber-500 font-semibold" style="box-shadow:0 0 15px rgba(245,158,11,.4)">📔 PERSONAL DIARY - Dukandaar Wala</button>
+    </div>
+    <div class="mt-2">
+      <button id="openPersonalNotes" class="w-full text-xs py-1.5 rounded bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold" style="box-shadow:0 0 15px rgba(217,70,239,.5)">📓 PERSONAL NOTES - Diary Wala (Lock)</button>
+    </div>
+  </div>
+</section>
+
+<!-- DOCK -->
+<div class="fixed bottom-3 left-1/2 -translate-x-1/2 z-30 glass px-3 py-2 rounded-full flex items-center gap-3 md:gap-5">
+  <button class="dock-btn" data-ai="chatgpt" title="ChatGPT"><span class="text-xl">🧠</span></button>
+  <button class="dock-btn" data-ai="copilot" title="Copilot"><span class="text-xl">✦</span></button>
+  <button class="dock-btn" data-ai="meta" title="Meta AI"><span class="text-xl">∞</span></button>
+  <button class="dock-btn" data-ai="friday" title="FRIDAY"><span class="text-xl">⚡</span></button>
+</div>
+
+<footer class="text-center text-[10px] opacity-60 pb-20 md:pb-6">1000% Monster-Beast-Peak Level | Designed for Cyber-Tandav | Ethical Teaching Only</footer>
+
+<!-- MODALS -->
+<div id="labModal" class="fixed inset-0 z-50 hidden">
+  <div class="absolute inset-0 bg-black/80 backdrop-blur-xl"></div>
+  <div class="relative max-w-6xl mx-auto mt-4 md:mt-10 glass rounded-2xl p-3 md:p-5 max-h-[92vh] overflow-auto">
+    <div class="flex justify-between items-center mb-3">
+      <h2 class="text-xl font-bold glow-text">REAL COMPUTER LAB</h2>
+      <button id="closeLab" class="px-3 py-1 glass rounded">✕</button>
+    </div>
+    <div class="grid md:grid-cols-4 gap-2 mb-3">
+      <button data-labtab="parts" class="labtab text-xs p-2 glass rounded bg-cyan-900/30">PC Parts Explorer</button>
+      <button data-labtab="assemble" class="labtab text-xs p-2 glass rounded">Assemble PC</button>
+      <button data-labtab="windows" class="labtab text-xs p-2 glass rounded">Computer Chalana Sikho</button>
+      <button data-labtab="terminal" class="labtab text-xs p-2 glass rounded">Safe Terminal</button>
+    </div>
+    <div id="labParts" class="labpane">
+      <div id="partsGrid" class="grid grid-cols-2 md:grid-cols-5 gap-3"></div>
+      <div id="partInfo" class="mt-3 p-3 glass rounded text-sm"></div>
+    </div>
+    <div id="labAssemble" class="labpane hidden">
+      <div class="grid md:grid-cols-3 gap-3">
+        <div class="glass p-3 rounded">
+          <h4 class="text-sm font-bold mb-2">Parts</h4>
+          <div id="dragParts" class="space-y-2"></div>
+        </div>
+        <div class="md:col-span-2 glass p-3 rounded">
+          <h4 class="text-sm font-bold mb-2">Motherboard</h4>
+          <div id="dropZone" class="h-[260px] rounded border-2 border-dashed border-cyan-500/30 grid place-items-center bg-black/20 relative overflow-hidden">
+            <span class="opacity-50">Drag parts here</span>
+            <div id="spark" class="absolute inset-0 pointer-events-none hidden"></div>
+          </div>
+          <div id="assembleMsg" class="mt-2 text-center font-bold text-emerald-400"></div>
+        </div>
+      </div>
+    </div>
+    <div id="labWindows" class="labpane hidden">
+      <div class="relative w-full h-[420px] rounded overflow-hidden border-white/10 bg-[#0b1220]" id="fakeWin">
+        <div class="absolute inset-0" style="background:url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200') center/cover;opacity:.3"></div>
+        <div id="winApps" class="relative p-4 grid grid-cols-4 gap-4 w-48"></div>
+        <div class="windows-taskbar absolute bottom-0 left-0 right-0 h-10 flex items-center px-3 gap-2">
+          <button id="startBtn" class="px-2 py-1 rounded bg-white/10 text-xs">Start</button>
+          <div class="text-[10px] opacity-70">Guided: Notepad kholo → typing seekho</div>
+        </div>
+        <div id="winWindow" class="absolute top-10 left-10 w-[300px] h-[220px] bg-black/80 border-white/20 rounded hidden">
+          <div class="flex justify-between items-center px-2 py-1 bg-white/10 text-xs"><span id="winTitle">Notepad</span><button id="winClose">✕</button></div>
+          <textarea class="w-full h-[calc(100%-24px)] bg-transparent p-2 text-xs outline-none" placeholder="Yahan type karein..."></textarea>
+        </div>
+        <div id="startMenu" class="absolute bottom-10 left-2 w-48 p-2 glass rounded hidden text-xs space-y-1">
+          <button class="w-full text-left px-2 py-1 hover:bg-white/10 rounded" data-app="Notepad">Notepad</button>
+          <button class="w-full text-left px-2 py-1 hover:bg-white/10 rounded" data-app="Paint">Paint</button>
+          <button class="w-full text-left px-2 py-1 hover:bg-white/10 rounded" data-app="Browser">Browser</button>
+          <button class="w-full text-left px-2 py-1 hover:bg-white/10 rounded" data-app="Explorer">File Explorer</button>
+        </div>
+      </div>
+    </div>
+    <div id="labTerminal" class="labpane hidden">
+      <div class="bg-black rounded p-3 font-mono text-xs h-[300px] overflow-auto" id="termOut">Cyber-Tandav Safe Terminal v1.0<br>Type 'help' for commands. Only ethical commands allowed.<br><br></div>
+      <div class="flex gap-2 mt-2">
+        <span class="text-green-400 font-mono">C:\TANDAV&gt;</span>
+        <input id="termIn" class="flex-1 bg-black/60 outline-none font-mono text-xs px-1" placeholder="dir, ipconfig, ping localhost, help">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="aiModal" class="fixed inset-0 z-50 hidden">
+  <div class="absolute inset-0 bg-black/70 backdrop-blur-md"></div>
+  <div class="relative max-w-lg mx-auto mt-20 glass rounded-2xl p-4">
+    <div class="flex justify-between items-center mb-2">
+      <h3 id="aiTitle" class="font-bold text-cyan-300">FRIDAY</h3>
+      <button id="closeAi" class="px2 py-1 glass rounded">✕</button>
+    </div>
+    <div id="aiChat" class="h-[260px] overflow-auto space-y-2 text-sm bg-black/30 p-2 rounded"></div>
+    <div class="flex gap-2 mt-2">
+      <input id="aiInput" class="flex-1 text-sm px-2 py1.5 rounded bg-black/40 border border-white/10 outline-none" placeholder="Ji sir, kaise help karu?">
+      <button id="aiSend" class="px-3 py-1.5 rounded bg-cyan-600 text-sm font-semibold">Send</button>
+    </div>
+  </div>
+</div>
+
+<div id="examModal" class="fixed inset-0 z-50 hidden">
+  <div class="absolute inset-0 bg-black/80 backdrop-blur"></div>
+  <div class="relative max-w-2xl mx-auto mt-10 glass rounded-2xl p-5">
+    <div class="flex justify-between items-center">
+      <h3 class="font-bold text-xl glow-text">Cyber Security Exam</h3>
+      <div class="flex items-center gap-3">
+        <div id="timer" class="text-amber-300 font-mono">10:00</div>
+        <button id="closeExam" class="px-2 py-1 glass rounded">✕</button>
+      </div>
+    </div>
+    <div id="quizBox" class="mt-4 space-y-4"></div>
+    <button id="submitQuiz" class="mt-4 w-full py-2 rounded bg-emerald-600 font-bold">Submit & Get Certificate</button>
+    <canvas id="certCanvas" width="800" height="560" class="hidden"></canvas>
+  </div>
+</div>
+
+<div id="projectModal" class="fixed inset-0 z-50 hidden">
+  <div class="absolute inset-0 bg-black/80 backdrop-blur-xl"></div>
+  <div class="relative max-w-7xl mx-auto mt-4 md:mt-6 glass rounded-2xl p-3 md:p-5 max-h-[94vh] overflow-auto">
+    <div class="flex justify-between items-center mb-3">
+      <h2 class="text-xl font-bold glow-text">🚀 LIVE PROJECT MODE - Class 12 Collaborative Website</h2>
+      <button id="closeProject" class="px-3 py-1 glass rounded">✕</button>
+    </div>
+    <div class="grid lg:grid-cols-4 gap-3">
+      <div class="lg:col-span-1 space-y-2">
+        <div class="glass p-2 rounded">
+          <h3 class="text-xs font-bold text-violet-300 mb-1">Team Members (Live)</h3>
+          <div id="teamList" class="text-[11px] space-y-1"></div>
+        </div>
+        <div class="glass p-2 rounded">
+          <h3 class="text-xs font-bold text-violet-300 mb-1">Project Tasks</h3>
+          <div id="projectTasks" class="text-[11px] space-y-1 max-h-[150px] overflow-auto"></div>
+        </div>
+        <div class="glass p-2 rounded">
+          <h3 class="text-xs font-bold text-violet-300 mb-1">Live Chat</h3>
+          <div id="projChat" class="h-[120px] overflow-auto text-[10px] bg-black/30 p-1 rounded"></div>
+          <input id="projInput" class="w-full mt-1 text-[10px] px-1 py-1 rounded bg-black/40 border border-white/10" placeholder="Message team...">
+        </div>
+      </div>
+      <div class="lg:col-span-3">
+        <div class="flex gap-1 mb-2">
+          <button data-tab="code" class="projTab text-[10px] px-2 py-1 glass rounded bg-violet-900/30">Code Editor</button>
+          <button data-tab="preview" class="projTab text-[10px] px-2 py-1 glass rounded">Live Preview</button>
+          <button data-tab="deploy" class="projTab text-[10px] px-2 py-1 glass rounded">Deploy</button>
+        </div>
+        <div id="projCode" class="projPane">
+          <div class="grid md:grid-cols-3 gap-2 h-[420px]">
+            <div class="flex flex-col"><label class="text-[10px]">HTML</label><textarea id="htmlCode" class="flex-1 bg-black/60 text-[11px] p-2 rounded font-mono outline-none border border-white/10"><!DOCTYPE html>
+<html>
+<head><title>Mera School</title></head>
+<body style="font-family:sans-serif;text-align:center;background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:40px">
+  <h1>🏫 Hamara School Website</h1>
+  <p>Class 12 Project by Cyber-Tandav Team</p>
+  <div style="background:rgba(255,255,255,.1);padding:20px;border-radius:10px;margin:20px">
+    <h2>About Us</h2>
+    <p>Hum ethical hacking seekh rahe hain!</p>
+  </div>
+</body>
+</html></textarea></div>
+            <div class="flex flex-col"><label class="text-[10px]">CSS</label><textarea id="cssCode" class="flex-1 bg-black/60 text-[11px] p-2 rounded font-mono outline-none border border-white/10">body{margin:0}
+h1{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}</textarea></div>
+            <div class="flex flex-col"><label class="text-[10px]">JS</label><textarea id="jsCode" class="flex-1 bg-black/60 text-[11px] p-2 rounded font-mono outline-none border border-white/10">console.log('Cyber-Tandav Project Live!');
+document.addEventListener('click',()=>{document.body.style.filter='hue-rotate(30deg)'});</textarea></div>
+          </div>
+          <button id="runProject" class="mt-2 w-full py-1.5 rounded bg-violet-600 text-xs font-bold">▶ Run & Update Preview</button>
+        </div>
+        <div id="projPreview" class="projPane hidden">
+          <iframe id="previewFrame" class="w-full h-[420px] bg-white rounded border-2 border-violet-500/30"></iframe>
+        </div>
+        <div id="projDeploy" class="projPane hidden">
+          <div class="text-center py-10">
+            <div class="text-5xl mb-3">🎉</div>
+            <h3 class="font-bold text-lg">Project Deployed Successfully!</h3>
+            <p class="text-xs opacity-80 mt-2">Local preview: school.cyber-tandav.local</p>
+            <p class="text-[10px] mt-4 text-amber-300">⚠ Ye sirf educational demo hai. Real hosting ke liye permission chahiye.</p>
+            <button id="exportProject" class="mt-4 px-4 py-2 rounded bg-emerald-600 text-xs font-bold">Export as ZIP</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- PERSONAL DIARY MODAL - Dukandaar Wala -->
+<div id="diaryModal" class="fixed inset-0 z-50 hidden">
+  <div class="absolute inset-0 bg-black/80 backdrop-blur-xl"></div>
+  <div class="relative max-w-6xl mx-auto mt-4 md:mt-6 glass rounded-2xl p-3 md:p-5 max-h-[94vh] overflow-auto">
+    <div class="flex justify-between items-center mb-3">
+      <h2 class="text-xl font-bold glow-text">📔 PERSONAL DIARY - Dukandaar Wala</h2>
+      <div class="flex gap-2">
+        <button id="exportDiaryCSV" class="text-xs px-2 py-1 glass rounded">CSV</button>
+        <button id="exportDiaryPDF" class="text-xs px-2 py-1 glass rounded">PDF</button>
+        <button id="closeDiary" class="px-3 py-1 glass rounded">✕</button>
+      </div>
+    </div>
+    
+    <div class="grid lg:grid-cols-3 gap-3">
+      <!-- Entry Form -->
+      <div class="lg:col-span-1 glass p-3 rounded-xl">
+        <h3 class="font-bold text-amber-300 mb-2">Naya Hisab Likho</h3>
+        <div class="space-y-2 text-xs">
+          <div><label>Date</label><input id="dDate" type="date" class="w-full mt-1 bg-black/40 p-1.5 rounded border border-white/10"></div>
+          <div><label>Prakar</label>
+            <select id="dType" class="w-full mt-1 bg-black/40 p-1.5 rounded border border-white/10">
+              <option>Bikri (Sale)</option>
+              <option>Kharid (Purchase)</option>
+              <option>Udhaar Diya</option>
+              <option>Udhaar Liya</option>
+              <option>Jama (Cash In)</option>
+              <option>Kharcha</option>
+            </select>
+          </div>
+          <div><label>Party/Graahak</label><input id="dParty" placeholder="Ramesh Kirana" class="w-full mt-1 bg-black/40 p-1.5 rounded border border-white/10"></div>
+          <div><label>Item/Saman</label><input id="dItem" placeholder="Chawal 5kg" class="w-full mt-1 bg-black/40 p-1.5 rounded border border-white/10"></div>
+          <div><label>Rakam ₹</label><input id="dAmt" type="number" placeholder="500" class="w-full mt-1 bg-black/40 p-1.5 rounded border border-white/10"></div>
+          <div><label>Note</label><input id="dNote" placeholder="Cash / PhonePe" class="w-full mt-1 bg-black/40 p-1.5 rounded border border-white/10"></div>
+          <button id="addDiary" class="w-full mt-2 py-1.5 rounded bg-amber-600 hover:bg-amber-500 font-bold text-sm">+ Add Entry</button>
+          <button id="clearDiaryForm" class="w-full py-1 rounded glass text-[11px]">Clear</button>
+        </div>
+        <div class="mt-4 p-2 rounded bg-black/30 text-[11px]">
+          <b>Tip:</b> Bikri = +paisa aaya, Kharid/Kharcha = -paisa gaya. Udhaar alag track hota hai.
+        </div>
+      </div>
+      
+      <!-- Ledger -->
+      <div class="lg:col-span-2 glass p-3 rounded-xl">
+        <div class="flex justify-between items-center mb-2">
+          <h3 class="font-bold text-amber-300">Aaj Ka Bahi-Khata</h3>
+          <input id="diarySearch" placeholder="Search party/item..." class="text-[11px] px-2 py-1 rounded bg-black/40 border border-white/10 w-40">
+        </div>
+        <div class="overflow-auto max-h-[300px] border border-white/5 rounded">
+          <table class="w-full text-[11px]">
+            <thead class="sticky top-0 bg-black/60 text-amber-200"><tr><th class="p-1 text-left">Date</th><th>Prakar</th><th>Party</th><th>Item</th><th class="text-right">₹</th><th></th></tr></thead>
+            <tbody id="diaryBody"></tbody>
+          </table>
+        </div>
+        
+        <!-- Summary -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3">
+          <div class="p-2 rounded bg-emerald-900/30 text-center"><div class="text-[10px] opacity-70">Total Bikri</div><div id="sumSale" class="font-bold text-emerald-300">₹0</div></div>
+          <div class="p-2 rounded bg-red-900/30 text-center"><div class="text-[10px] opacity-70">Kharid/Kharcha</div><div id="sumPurchase" class="font-bold text-red-300">₹0</div></div>
+          <div class="p-2 rounded bg-amber-900/30 text-center"><div class="text-[10px] opacity-70">Udhaar Diya</div><div id="sumUdhaarOut" class="font-bold text-amber-300">₹0</div></div>
+          <div class="p-2 rounded bg-cyan-900/30 text-center"><div class="text-[10px] opacity-70">Net Balance</div><div id="sumBalance" class="font-bold text-cyan-300">₹0</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PERSONAL NOTES MODAL - Diary Wala with Real Lock -->
+<div id="personalNotesModal" class="fixed inset-0 z-[60] hidden">
+  <div class="absolute inset-0 bg-black/90 backdrop-blur-2xl"></div>
+  <div class="relative max-w-7xl mx-auto mt-2 md:mt-4 h-[96vh] flex flex-col">
+    <div class="glass rounded-t-2xl p-3 flex justify-between items-center" style="background:linear-gradient(135deg,#3a1f0d,#1a0a00); border:2px solid #8b5a2b; box-shadow:0 0 30px rgba(139,90,43,.6), inset 0 2px 0 rgba(255,215,0,.2)">
+      <h2 class="text-xl md:text-2xl font-black glow-text" style="font-family:'Orbitron'; color:#ffd700; text-shadow:0 0 15px #ff8c00">📓 PERSONAL NOTES • Diary Wala</h2>
+      <div class="flex gap-2">
+        <button id="lockNotes" class="text-xs px-2 py-1 glass rounded bg-red-900/40">🔒 Lock</button>
+        <button id="closePersonalNotes" class="px-3 py-1 glass rounded">✕</button>
+      </div>
+    </div>
+    <div id="notesLockScreen" class="flex-1 glass rounded-b-2xl p-4 md:p-8 flex items-center justify-center" style="background:radial-gradient(circle at center,#1a0f00,#000)">
+      <div class="w-full max-w-md text-center">
+        <div class="w-24 h-24 mx-auto mb-4 rounded-full grid place-items-center" style="background:radial-gradient(circle,#ffd700,#8b5a2b); box-shadow:0 0 40px #ff8c00"><span class="text-4xl">🔐</span></div>
+        <h3 class="text-2xl font-bold mb-2 text-amber-200">Privacy Protection</h3>
+        <p class="text-xs opacity-70 mb-4">Apna secret set karo - Password, PIN, Pattern ya FaceLock</p>
+        <div id="lockSetup" class="hidden">
+          <div class="flex justify-center gap-1 mb-3">
+            <button data-locktab="password" class="lockTab px-3 py-1 text-xs rounded bg-amber-900/40">Password</button>
+            <button data-locktab="pin" class="lockTab px-3 py-1 text-xs rounded">PIN</button>
+            <button data-locktab="pattern" class="lockTab px-3 py-1 text-xs rounded">Pattern</button>
+            <button data-locktab="face" class="lockTab px-3 py-1 text-xs rounded">FaceLock</button>
+          </div>
+          <div id="lockPassword" class="lockPane"><input id="setPassword" type="password" placeholder="Strong password" class="w-full p-2 rounded bg-black/50 border border-amber-500/30 text-sm mb-2"><input id="confirmPassword" type="password" placeholder="Confirm" class="w-full p-2 rounded bg-black/50 border border-amber-500/30 text-sm mb-3"></div>
+          <div id="lockPin" class="lockPane hidden"><input id="setPin" type="password" inputmode="numeric" maxlength="6" placeholder="4-6 digit PIN" class="w-full p-2 text-center text-2xl tracking-widest rounded bg-black/50 border border-amber-500/30 mb-3"></div>
+          <div id="lockPattern" class="lockPane hidden"><canvas id="patternSetup" width="240" height="240" class="mx-auto bg-black/40 rounded-xl cursor-crosshair"></canvas><p class="text-[10px] mt-1 opacity-60">Pattern kheecho (kam se kam 4 dots)</p></div>
+          <div id="lockFace" class="lockPane hidden"><button id="registerFace" class="w-full py-2 rounded bg-cyan-700 hover:bg-cyan-600 text-sm">👤 FaceLock Register</button><p class="text-[10px] mt-2 opacity-60">Device Face ID / Fingerprint use hoga</p></div>
+          <button id="saveLock" class="w-full mt-3 py-2 rounded bg-amber-600 font-bold">✓ Save & Lock</button>
+        </div>
+        <div id="lockUnlock">
+          <div id="unlockPrompt" class="mb-3"></div>
+          <input id="unlockInput" type="password" placeholder="Enter Password/PIN" class="w-full p-2 rounded bg-black/50 border border-amber-500/30 text-center mb-2 hidden">
+          <canvas id="patternUnlock" width="240" height="240" class="mx-auto bg-black/40 rounded-xl cursor-crosshair hidden"></canvas>
+          <button id="unlockBtn" class="w-full py-2 rounded bg-emerald-600 font-bold mt-2">🔓 Unlock</button>
+          <button id="useFaceUnlock" class="w-full py-1.5 rounded glass text-xs mt-1 hidden">Use FaceLock</button>
+          <p id="lockError" class="text-red-400 text-xs mt-2 h-4"></p>
+        </div>
+      </div>
+    </div>
+    <div id="notesContent" class="flex-1 hidden flex-col lg:flex-row gap-2 p-2 glass rounded-b-2xl overflow-hidden" style="background:linear-gradient(to bottom,#f5e9c9,#e8d9b0)">
+      <div class="w-full lg:w-48 glass p-2 rounded-xl" style="background:rgba(60,30,10,.7); color:#ffd">
+        <div class="flex justify-between items-center mb-2"><h4 class="font-bold text-amber-200 text-sm">Pages</h4><button id="newPage" class="text-[10px] px-1.5 py-0.5 rounded bg-amber-700">+ New</button></div>
+        <div id="pagesList" class="space-y-1 max-h-[120px] lg:max-h-full overflow-auto text-xs"></div>
+      </div>
+      <div class="flex-1 flex flex-col gap-2">
+        <div class="flex flex-wrap gap-1 items-center p-2 rounded-xl glass" style="background:rgba(0,0,0,.5)">
+          <select id="notesTool" class="text-[10px] px-1 py-1 rounded bg-black/70 text-amber-200 w-[90px]">
+            <option>Pen</option><option>Marker</option><option>Highlighter</option><option>Brush</option><option>Calligraphy</option><option>Spray</option><option>Eraser</option><option>Laser</option><option>Line</option><option>Rectangle</option><option>Circle</option><option>Text</option>
+          </select>
+          <input id="notesColor" type="color" value="#8b4513" class="w-5 h-5 rounded">
+          <div id="colorPalette" class="flex gap-[2px]"></div>
+          <input id="notesSize" type="range" min="1" max="800" value="3" class="w-14" title="Size 1-800 (40x)">
+          <span id="sizeLabel" class="text-[9px] w-6">3</span>
+          <div class="flex items-center gap-1 border-l border-white/20 pl-1">
+            <span class="text-[9px]">Zoom</span><input id="notesZoom" type="range" min="25" max="4000" value="100" class="w-14" title="25% to 4000% (40x)"><span id="zoomLabel" class="text-[9px] w-7">1x</span>
+          </div>
+          <button id="notesUndo" class="text-[10px] px-1 py-0.5 rounded bg-black/40">Undo</button>
+          <button id="notesRedo" class="text-[10px] px-1 py-0.5 rounded bg-black/40">Redo</button>
+          <button id="notesClear" class="text-[10px] px-1 py-0.5 rounded bg-red-900/60">Clear</button>
+          <select id="notesTemplate" class="text-[10px] px-1 py-0.5 rounded bg-black/60"><option>Lined</option><option>Grid</option><option>Dotted</option><option>Blank</option><option>Music</option><option>Isometric</option></select>
+          <button id="notesSticky" class="text-[10px] px-1 py-0.5 rounded bg-yellow-600/80">Sticky</button>
+          <button id="notesImage" class="text-[10px] px-1 py-0.5 rounded bg-purple-800/70">Image</button>
+          <button id="notesVoice" class="text-[10px] px-1 py-0.5 rounded bg-cyan-800/70">🎤 Voice</button>
+          <input type="file" id="imgInput" accept="image/*" class="hidden">
+          <div class="flex-1"></div>
+          <span class="text-[9px] opacity-60">40x MAX</span>
+          <button id="saveNotesPNG" class="text-[10px] px-1 py-0.5 rounded bg-emerald-800/70">PNG</button>
+          <button id="saveNotesPDF" class="text-[10px] px-1 py-0.5 rounded bg-emerald-800/70">PDF</button>
+          <button id="saveNotesData" class="text-[10px] px-1.5 py-0.5 rounded bg-amber-600 font-bold animate-pulse">💾 Save</button>
+        </div>
+        <div class="relative flex-1 rounded-xl overflow-hidden shadow-inner" style="background:#fffaf0; background-image:repeating-linear-gradient(transparent,transparent 23px,#d2b48c 24px); border:3px solid #8b5a2b">
+          <div class="absolute left-12 top-0 bottom-0 w-[2px] bg-red-300/60"></div>
+          <canvas id="notesCanvas" width="1600" height="900" class="absolute inset-0 w-full h-full touch-none"></canvas>
+          <div id="notesStickies" class="absolute inset-0 pointer-events-none"></div>
+          <textarea id="notesText" placeholder="Yahan likho... diary jaise..." class="absolute top-2 left-16 right-2 bottom-2 bg-transparent outline-none resize-none text-[15px] leading-6" style="font-family:'Hind',cursive; color:#3a1f0d; line-height:24px"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const store=(k,v)=>localStorage.setItem(k,JSON.stringify(v)), load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
+
+// ONLINE/OFFLINE
+function updateOnline(){ const on=navigator.onLine; $('#onlineStatus').textContent=on?'ONLINE • Peak Particles':'OFFLINE • Clean Mode'; $('#onlineStatus').className='text-[10px] md:text-xs px-2 py-1 rounded-full '+(on?'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30':'bg-amber-500/20 text-amber-300 border border-amber-500/30'); initParticles(on?2000:500); } window.addEventListener('online',updateOnline); window.addEventListener('offline',updateOnline);
+
+// THEMES
+$$('.theme-btn').forEach(b=>b.onclick=()=>{ 
+  const theme=b.dataset.theme; 
+  document.body.setAttribute('data-theme',theme); 
+  document.body.classList.toggle('particle-evil',theme==='evil'); 
+  $('#shloka').classList.toggle('hidden',theme!=='sanatani'); 
+  store('ct-theme',theme); 
+  // 100X particles
+  const base=navigator.onLine?2000:500;
+  initParticles(base);
+  applyTheme100X(theme);
+});
+const savedTheme=load('ct-theme','suitup'); document.body.setAttribute('data-theme',savedTheme); setTimeout(()=>applyTheme100X(savedTheme),500);
+
+
+// === 100X THEME ENGINE ===
+function applyTheme100X(theme){
+  // clear layers
+  $('#evil-layer').innerHTML='<div class="fog"></div>';
+  $('#attractive-layer').innerHTML='';
+  $('#lovely-layer').innerHTML='';
+  $('#aggressive-layer').innerHTML='<div class="lava"></div>';
+  $('#sanatani-layer').innerHTML='';
+  $('#scifi-layer').innerHTML='<div class="grid3d"></div>';
+  $('#hud').classList.toggle('hidden', theme!=='suitup');
+  // OS Launcher removed per user request
+if(theme==='evil'){
+    // khoon laal drips - 100X
+    for(let i=0;i<150;i++){ const d=document.createElement('div'); d.className='blood-drip'; d.style.left=Math.random()*100+'%'; d.style.animationDelay=Math.random()*4+'s'; d.style.height=60+Math.random()*140+'px'; d.style.width=2+Math.random()*4+'px'; $('#evil-layer').appendChild(d); }
+    // aankhein - 25
+    for(let i=0;i<25;i++){ const e=document.createElement('div'); e.className='evil-eye'; e.style.left=Math.random()*90+'%'; e.style.top=5+Math.random()*80+'%'; e.style.transform=`scale(${0.8+Math.random()*0.6})`; $('#evil-layer').appendChild(e); }
+    // blood splatter
+    for(let i=0;i<12;i++){ const s=document.createElement('div'); s.className='blood-splatter'; s.style.left=Math.random()*90+'%'; s.style.top=Math.random()*80+'%'; s.style.animationDelay=i*0.3+'s'; $('#evil-layer').appendChild(s); }
+    document.body.style.filter='contrast(1.4) saturate(1.8) brightness(0.7)';
+    document.body.classList.add('particle-evil');
+  } else { document.body.style.filter=''; document.body.classList.remove('particle-evil'); }
+  
+  if(theme==='attractive'){
+    // phool titliyan - 100X
+    for(let i=0;i<70;i++){ const b=document.createElement('div'); b.className='butterfly'; b.innerHTML=['🦋','🦋','🦋','🐝'][i%4]; b.style.left=Math.random()*100+'vw'; b.style.animationDelay=Math.random()*20+'s'; b.style.fontSize=14+Math.random()*20+'px'; b.style.animationDuration=15+Math.random()*10+'s'; $('#attractive-layer').appendChild(b); }
+    for(let i=0;i<120;i++){ const f=document.createElement('div'); f.style.position='fixed'; f.style.left=Math.random()*100+'vw'; f.style.top='-20px'; f.innerHTML=['🌸','🌺','🌼','🌷','💮'][i%5]; f.style.fontSize=10+Math.random()*20+'px'; f.style.animation='fall 18s linear infinite'; f.style.animationDelay=Math.random()*18+'s'; f.style.zIndex='4'; f.style.pointerEvents='none'; f.style.filter='drop-shadow(0 0 5px pink)'; $('#attractive-layer').appendChild(f); }
+    for(let i=0;i<30;i++){ const b=document.createElement('div'); b.className='bokeh'; b.style.left=Math.random()*100+'%'; b.style.animationDelay=Math.random()*25+'s'; $('#attractive-layer').appendChild(b); }
+  }
+  
+  if(theme==='lovely'){
+    for(let i=0;i<200;i++){ const p=document.createElement('div'); p.className='rose-petal'; p.style.left=Math.random()*100+'vw'; p.style.animationDelay=Math.random()*12+'s'; p.style.background= i%3===0 ? 'radial-gradient(#ff69b4,#ff1493)' : i%3===1 ? 'radial-gradient(#ffc0cb,#ff69b4)' : 'radial-gradient(#ff1493,#c71585)'; p.style.width=12+Math.random()*12+'px'; p.style.height=p.style.width; $('#lovely-layer').appendChild(p); }
+    for(let i=0;i<30;i++){ const h=document.createElement('div'); h.className='heart-float'; h.innerHTML='💖'; h.style.left=Math.random()*95+'%'; h.style.animationDelay=Math.random()*8+'s'; h.style.fontSize=16+Math.random()*14+'px'; $('#lovely-layer').appendChild(h); }
+    document.body.style.boxShadow='inset 0 0 250px rgba(255,20,147,.4)';
+  }
+  
+  if(theme==='aggressive'){
+    for(let i=0;i<300;i++){ const s=document.createElement('div'); s.className='fire-spark spark'; s.style.left=Math.random()*100+'vw'; s.style.bottom=Math.random()*45+'%'; s.style.animationDelay=Math.random()*3+'s'; s.style.width=2+Math.random()*4+'px'; s.style.height=s.style.width; $('#aggressive-layer').appendChild(s); }
+    for(let i=0;i<80;i++){ const a=document.createElement('div'); a.className='ash'; a.style.left=Math.random()*100+'%'; a.style.top=-10-Math.random()*50+'px'; a.style.animationDelay=Math.random()*6+'s'; $('#aggressive-layer').appendChild(a); }
+    // volcano shake - stronger
+    document.body.animate([{transform:'translate(0,0)'},{transform:'translate(3px,-3px)'},{transform:'translate(-3px,3px)'},{transform:'translate(2px,2px)'},{transform:'translate(0,0)'}],{duration:400,iterations:30});
+  }
+  
+  if(theme==='suitup'){
+    // HUD already shown, add extra scanning
+    for(let i=0;i<3;i++){ const scan=document.createElement('div'); scan.className='scanline'; scan.style.animationDelay=i*1.3+'s'; scan.style.top=i*33+'%'; document.getElementById('hud').appendChild(scan); }
+  }
+  
+  if(theme==='sanatani'){
+    // diya - 51
+    for(let i=0;i<51;i++){ const d=document.createElement('div'); d.className='diya'; d.style.left=2+i*1.9+'%'; d.style.bottom=85+Math.sin(i)*5+'px'; d.style.animationDelay=Math.random()*1.5+'s'; $('#sanatani-layer').appendChild(d); }
+    // Om floating - 30
+    const oms=['ॐ','ॐ नमः शिवाय','ॐ गं गणपतये नमः','श्रीराम','राधे राधे','ॐ भूर्भुवः स्वः','हर हर महादेव','जय श्री कृष्ण'];
+    for(let i=0;i<30;i++){ const o=document.createElement('div'); o.className='om-float'; o.textContent=oms[i%oms.length]; o.style.left=Math.random()*90+'%'; o.style.animationDelay=Math.random()*40+'s'; o.style.fontSize=2+Math.random()*3+'rem'; o.style.opacity=0.05+Math.random()*0.08; $('#sanatani-layer').appendChild(o); }
+    // mandir silhouette
+    const mandir=document.createElement('div'); mandir.className='mandir-silhouette'; $('#sanatani-layer').appendChild(mandir);
+    // shloka already in HTML, make visible
+    const fx=document.getElementById('fx2'); const fctx=fx.getContext('2d'); fx.width=innerWidth; fx.height=innerHeight; fctx.clearRect(0,0,fx.width,fx.height);
+  }
+  
+  if(theme==='scifi'){
+    // Matrix intensify, add hologram orbs - 60
+    for(let i=0;i<60;i++){ const h=document.createElement('div'); h.style.position='fixed'; h.style.width=60+Math.random()*60+'px'; h.style.height=h.style.width; h.style.border='1px solid rgba(0,255,65,.5)'; h.style.borderRadius='50%'; h.style.left=Math.random()*90+'%'; h.style.top=Math.random()*80+'%'; h.style.boxShadow='0 0 40px rgba(0,255,65,.4), inset 0 0 25px rgba(0,255,65,.25)'; h.style.animation=`pulse ${2+Math.random()*2}s infinite`; h.style.pointerEvents='none'; h.style.zIndex='3'; $('#scifi-layer').appendChild(h); }
+    for(let i=0;i<8;i++){ const t=document.createElement('div'); t.className='holo-text'; t.textContent='SYSTEM ONLINE • MATRIX ACTIVE • CYBER-TANDAV OS • '; t.style.top=15+i*11+'%'; t.style.animationDelay=i*-3.5+'s'; $('#scifi-layer').appendChild(t); }
+  }
+}
+
+// PARTICLES
+let particles=[],ctx,canvas=$('#bg'),anim;
+function initParticles(count){ cancelAnimationFrame(anim); canvas.width=innerWidth; canvas.height=innerHeight; ctx=canvas.getContext('2d'); particles=Array.from({length:count},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-.5)*1.2,vy:(Math.random()-.5)*1.2,r:Math.random()*3+1})); draw(); }
+function draw(){ ctx.clearRect(0,0,canvas.width,canvas.height); const theme=document.body.dataset.theme; particles.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>canvas.width)p.vx*=-1; if(p.y<0||p.y>canvas.height)p.vy*=-1; ctx.beginPath(); if(theme==='scifi'){ ctx.fillStyle='#00ff41'; ctx.font='12px monospace'; ctx.shadowColor='#00ff41'; ctx.shadowBlur=8; ctx.fillText(String.fromCharCode(0x30A0+Math.random()*96),p.x,p.y); ctx.shadowBlur=0; } else if(theme==='evil'){ ctx.fillStyle='rgba(139,0,0,.9)'; ctx.shadowColor='#ff0000'; ctx.shadowBlur=6; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*1.2,0,7); ctx.fill(); ctx.shadowBlur=0; if(Math.random()<.01){ ctx.fillStyle='white'; ctx.beginPath(); ctx.arc(p.x-8,p.y,2.5,0,7); ctx.arc(p.x+8,p.y,2.5,0,7); ctx.fill(); ctx.fillStyle='#ff0000'; ctx.beginPath(); ctx.arc(p.x-8,p.y,1,0,7); ctx.arc(p.x+8,p.y,1,0,7); ctx.fill(); } } else if(theme==='lovely'){ ctx.fillStyle='rgba(255,105,180,.8)'; ctx.arc(p.x,p.y,p.r*1.5,0,Math.PI*2); ctx.fill(); } else if(theme==='sanatani'){ ctx.fillStyle='rgba(255,153,51,.9)'; ctx.arc(p.x,p.y,2,0,7); ctx.fill(); } else if(theme==='evil'){ ctx.fillStyle='rgba(139,0,0,.8)'; ctx.arc(p.x,p.y,p.r,0,7); ctx.fill(); if(Math.random()<.002){ ctx.fillStyle='white'; ctx.beginPath(); ctx.arc(p.x-10,p.y,3,0,7); ctx.arc(p.x+10,p.y,3,0,7); ctx.fill(); } } else { ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--primary'); ctx.globalAlpha=.7; ctx.arc(p.x,p.y,p.r,0,7); ctx.fill(); ctx.globalAlpha=1; } }); anim=requestAnimationFrame(draw); }
+addEventListener('resize',()=>initParticles(particles.length)); updateOnline();
+
+// MODES
+const modes={hacker:{title:'Ethical Hacker Mode',desc:'Ethics, Linux, Networking. Sirf authorized labs.',widgets:['IT Act 2000','Linux Basics','Nmap Recon','OWASP Top10']},pentest:{title:'Web Pentester Mode',desc:'Theory + Defensive labs only. No illegal testing.',widgets:['Recon','Burp Suite','ZAP','Report Writing']},mentor:{title:'Mentor Mode',desc:'Students ko guide karein, doubt solve.',widgets:['Live Class','Doubts','Notes','Analysis']},school:{title:'School Teacher Mode',desc:'Class 3-10 CBSE/UP Board Computer',widgets:['Paint','Scratch','HTML','Python Basic']},college:{title:'College Professor Mode',desc:'Class 11-12, BCA projects',widgets:['File Handling','SQL','DBMS','Projects']},university:{title:'Cyber University Mode',desc:'Advanced curriculum',widgets:['CEH Prep','OSCP Path','Bug Bounty Ethics','Research']},friday:{title:'FRIDAY AI Mode',desc:'Hindi assistant for teaching',widgets:['Auto Notes','Quiz Gen','Doubt AI','Translate']}};
+$$('.mode-btn').forEach(b=>b.onclick=()=>{ $$('.mode-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); const m=modes[b.dataset.mode]; $('#modeTitle').textContent=m.title; $('#modeDesc').textContent=m.desc; $('#dashboardWidgets').innerHTML=m.widgets.map(w=>`<div class="p-2 rounded bg-black/30 border border-white/5">${w}</div>`).join(''); });
+$('#modeTitle').textContent=modes.hacker.title; $('#dashboardWidgets').innerHTML=modes.hacker.widgets.map(w=>`<div class="p-2 rounded bg-black/30 border border-white/5">${w}</div>`).join('');
+
+// 45 DAYS MODULE
+const daysData=[
+{day:1,title:'Ethics & Indian IT Act 2000',content:'Ethical hacking ka matlab permission lekar security test karna. IT Act 2000 Section 43, 66 ke tahat unauthorized access illegal hai. Hamesha written permission lein.'},
+{day:2,title:'Linux Basics',content:'cd, ls, pwd, whoami – yeh commands apne system par seekhein. VirtualBox me Kali/Ubuntu lab banayein.'},
+{day:3,title:'Networking Fundamentals',content:'IP, TCP/UDP, Ports, DNS – theory samjhein. Wireshark se apne network ka traffic dekhein (authorized).'},
+{day:7,title:'Recon & Footprinting (Theory)',content:'Public info gather karna – WHOIS, DNS records. Sirf apni domain ya lab par.'},
+{day:10,title:'Nmap Basics (Legal Lab)',content:'Nmap port scanner hai. Legal lab me apne VM ko scan karein. Command theory: host discovery.'},
+{day:12,title:'XSS – Theory Only',content:'Cross-Site Scripting me attacker browser me script inject karta hai. Bachav: output encoding, CSP, HttpOnly cookies. Sirf theory.'},
+{day:14,title:'SQLi – Theory Only',content:'SQL Injection me input validation missing hoti hai. Bachav: Prepared statements, parameterized queries. Lab: DVWA apne PC par.'},
+{day:16,title:'CSRF Theory',content:'Cross-Site Request Forgery – user se bina permission action karwana. Bachav: CSRF tokens, SameSite cookies.'},
+{day:18,title:'IDOR Theory',content:'Insecure Direct Object Reference – ID change karke data access. Bachav: access control, server-side checks.'},
+{day:20,title:'SSRF Theory',content:'Server-Side Request Forgery – server ko internal URL hit karwana. Bachav: allowlist, no internal access.'},
+{day:22,title:'Auth Bypass Theory',content:'Weak logic se login bypass. Bachav: MFA, rate limiting, strong sessions.'},
+{day:24,title:'File Upload Security',content:'Malicious file upload rokna. Bachav: type validation, sandbox, antivirus scan.'},
+{day:28,title:'Burp Suite Community',content:'Proxy tool for authorized testing. Apne lab traffic intercept karke seekhein.'},
+{day:30,title:'OWASP ZAP',content:'Free scanner – apne legal app par scan chalakar report dekhein.'},
+{day:35,title:'6 Live Projects',content:'1) DVWA audit (local) 2) API lab 3) Phishing Awareness Campaign (education only, no real phishing)'},
+{day:42,title:'Bug Bounty Ethics',content:'HackerOne, Bugcrowd rules padhein. Scope ke bahar test karna illegal hai.'},
+{day:45,title:'Report Writing',content:'Executive summary, steps, impact, remediation – professional report format.'}
+];
+const fullDays=Array.from({length:45},(_,i)=>{const d=i+1; const found=daysData.find(x=>x.day===d); return found||{day:d,title:`Day ${d} Practice`,content:'Revision aur lab practice. Har cheez authorized environment me.'}});
+const progress=load('ct-progress',{});
+function renderModules(){ $('#moduleAccordion').innerHTML=fullDays.map(d=>`<details class="group bg-black/20 rounded"><summary class="flex items-center gap-2 p-2 cursor-pointer text-xs"><input type="checkbox" data-day="${d.day}" ${progress[d.day]?'checked':''} class="accent-cyan-500"><span class="flex-1">${d.day}. ${d.title}</span></summary><div class="p-2 text-[11px] opacity-80 border-t border-white/5">${d.content}<div class="mt-1 text-[10px] text-amber-300">⚠ Sirf ethical lab me practice karein. Indian IT Act ka palan karein.</div></div></details>`).join(''); updateProgress(); $$('#moduleAccordion input').forEach(cb=>cb.onchange=()=>{ progress[cb.dataset.day]=cb.checked; store('ct-progress',progress); updateProgress(); addXP(5); }); }
+function updateProgress(){ const done=Object.values(progress).filter(Boolean).length; $('#progressText').textContent=`${done}/45`; }
+renderModules();
+
+// WHITEBOARD
+const wb=$('#whiteboard'),wctx=wb.getContext('2d'); let drawing=false,last={},history=[],redoStack=[],currentTool='Pen';
+function resizeWB(){ const r=wb.getBoundingClientRect(); wb.width=1200; wb.height=500; wctx.lineCap='round'; wctx.lineJoin='round'; } resizeWB();
+function pushHistory(){ if(history.length>30)history.shift(); history.push(wctx.getImageData(0,0,wb.width,wb.height)); redoStack=[]; }
+pushHistory();
+function getPos(e){ const rect=wb.getBoundingClientRect(); const t=e.touches?.[0]; const x=((t?.clientX??e.clientX)-rect.left)*(wb.width/rect.width); const y=((t?.clientY??e.clientY)-rect.top)*(wb.height/rect.height); return {x,y}; }
+wb.addEventListener('mousedown',start); wb.addEventListener('touchstart',start,{passive:false});
+function start(e){ e.preventDefault(); drawing=true; last=getPos(e); wctx.beginPath(); wctx.moveTo(last.x,last.y); if(currentTool==='Laser'){$('#laserDot').classList.remove('hidden')} }
+addEventListener('mousemove',move); addEventListener('touchmove',move,{passive:false});
+function move(e){ const p=getPos(e); if(currentTool==='Laser'){ $('#laserDot').style.left=(e.clientX-wb.getBoundingClientRect().left)+'px'; $('#laserDot').style.top=(e.clientY-wb.getBoundingClientRect().top)+'px'; return} if(!drawing)return; wctx.strokeStyle=$('#color').value; wctx.lineWidth=+$('#size').value; wctx.shadowBlur=0; wctx.globalAlpha=1; wctx.globalCompositeOperation='source-over';
+ if(currentTool==='Highlighter'){ wctx.globalAlpha=.3; wctx.lineWidth=20; } else if(currentTool==='Glass-Pen'){ wctx.shadowBlur=15; wctx.shadowColor='#22d3ee'; wctx.strokeStyle='#a5f3fc'; } else if(currentTool==='Duster'){ wctx.globalCompositeOperation='destination-out'; wctx.lineWidth=30; } else if(currentTool==='Pencil'){ wctx.lineWidth=1; }
+ if(['Pen','Pencil','Marker','Highlighter','Glass-Pen','Duster'].includes(currentTool)){ wctx.lineTo(p.x,p.y); wctx.stroke(); } last=p;
+}
+addEventListener('mouseup',end); addEventListener('touchend',end);
+function end(){ if(drawing && currentTool!=='Laser') pushHistory(); drawing=false; $('#laserDot').classList.add('hidden'); }
+$('#tool').onchange=e=>currentTool=e.target.value;
+$('#undo').onclick=()=>{ if(history.length>1){ redoStack.push(history.pop()); wctx.putImageData(history[history.length-1],0,0);} };
+$('#redo').onclick=()=>{ if(redoStack.length){ const img=redoStack.pop(); history.push(img); wctx.putImageData(img,0,0);} };
+$('#clear').onclick=()=>{ wctx.clearRect(0,0,wb.width,wb.height); pushHistory(); };
+$('#savePng').onclick=()=>{ const a=document.createElement('a'); a.href=wb.toDataURL(); a.download='cyber-tandav-board.png'; a.click(); addXP(2); };
+$('#savePdf').onclick=()=>{ const {jsPDF}=window.jspdf; const pdf=new jsPDF({orientation:'landscape'}); pdf.addImage(wb.toDataURL(),'PNG',10,10,277,150); pdf.save('whiteboard.pdf'); };
+let noteId=0; $('#noteBtn').onclick=()=>{ const n=document.createElement('div'); n.className='sticky-note'; n.style.left='40px'; n.style.top=(40+noteId*20)+'px'; n.contentEditable=true; n.textContent='Sticky note...'; $('#stickies').appendChild(n); n.style.pointerEvents='auto'; noteId++; };
+
+// NOTES
+const notesEl=$('#notes'); notesEl.value=load('ct-notes','');
+let noteTimer; notesEl.oninput=()=>{ clearTimeout(noteTimer); noteTimer=setTimeout(()=>store('ct-notes',notesEl.value),400); };
+$('#mdToggle').onclick=()=>{ const prev=$('#notesPreview'); prev.classList.toggle('hidden'); notesEl.classList.toggle('hidden'); prev.innerHTML=marked.parse(notesEl.value||''); };
+$('#exportTxt').onclick=()=>{ const b=new Blob([notesEl.value],{type:'text/plain'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='notes.txt'; a.click(); };
+$('#exportPdfNote').onclick=()=>{ const {jsPDF}=window.jspdf; const pdf=new jsPDF(); const lines=pdf.splitTextToSize(notesEl.value,180); pdf.text(lines,10); pdf.save('notes.pdf'); };
+
+// CHAT
+const chatBox=$('#chatBox'); let chatHist=load('ct-chat',[]);
+function renderChat(filter=''){ chatBox.innerHTML=''; chatHist.filter(m=>!filter||m.text.toLowerCase().includes(filter)).forEach(m=>{ const d=document.createElement('div'); d.className='p-1.5 rounded '+(m.who==='teacher'?'bg-cyan-900/30 text-cyan-100':'bg-white/5'); d.innerHTML=`<b>${m.who==='teacher'?'Sir':'Student'}:</b> ${m.text}`; chatBox.appendChild(d); }); chatBox.scrollTop=chatBox.scrollHeight; }
+renderChat();
+$('#chatSend').onclick=sendChat; $('#chatInput').onkeydown=e=>{if(e.key==='Enter')sendChat()};
+function sendChat(){ const t=$('#chatInput').value.trim(); if(!t)return; chatHist.push({who:'teacher',text:t,time:Date.now()}); store('ct-chat',chatHist); $('#chatInput').value=''; renderChat(); setTimeout(()=>{ const replies=[`Sir, ${t.includes('SQLi')?'database me injection hota hai na?':'samjhaiye'},`,`Sir example do na`,`Sir notes bhej do`]; replies.forEach((r,i)=>setTimeout(()=>{ chatHist.push({who:'student',text:r}); store('ct-chat',chatHist); renderChat(); },600+i*500)); },400); addXP(1); }
+$('#chatSearch').oninput=e=>renderChat(e.target.value.toLowerCase());
+$('#exportChat').onclick=()=>{ const txt=chatHist.map(m=>`${m.who}: ${m.text}`).join('\n'); const b=new Blob([txt],{type:'text/plain'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='class-chat.txt'; a.click(); };
+
+// DOUBTS
+let doubts=load('ct-doubts',[{s:'Aarav',d:'XSS kya hota hai?',date:'2025-06-20',status:'Open'},{s:'Priya',d:'Linux command?',date:'2025-06-21',status:'Open'}]);
+function renderDoubts(){ $('#doubtBody').innerHTML=doubts.map((x,i)=>`<tr class="border-t border-white/5"><td class="py-1">${x.s}</td><td>${x.d}</td><td><button data-i="${i}" class="text-[10px] px-1.5 py-0.5 rounded ${x.status==='Solved'?'bg-emerald-700/40':'bg-amber-700/40'}">${x.status}</button></td></tr>`).join(''); $$('#doubtBody button').forEach(b=>b.onclick=()=>{ doubts[b.dataset.i].status='Solved'; store('ct-doubts',doubts); renderDoubts(); addXP(3); }); }
+renderDoubts(); $('#addDoubt').onclick=()=>{ const s=prompt('Student name?')||'Student'; const d=prompt('Doubt?')||'...'; doubts.push({s,d,date:new Date().toISOString().slice(0,10),status:'Open'}); store('ct-doubts',doubts); renderDoubts(); };
+
+// DAILY ANALYSIS
+const students=['Aarav','Priya','Rohan','Anaya','Kabir','Ishita']; function renderCircles(){ $('#studentCircles').innerHTML=students.map((s,i)=>{ const p=60+Math.floor(Math.random()*35); return `<div class="text-center"><div class="w-14 h-14 mx-auto rounded-full grid place-items-center text-[10px] font-bold" style="background:conic-gradient(var(--primary) ${p}%, #111 ${p}%);">${p}%</div><div class="text-[10px] mt-1">${s}</div></div>`}).join(''); } renderCircles();
+new Chart($('#weekChart'),{type:'line',data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],datasets:[{label:'Class Avg %',data:[68,72,75,80,78,85,88],borderColor:'#22d3ee',tension:.4,fill:false}]},options:{plugins:{legend:{display:false}},scales:{y:{ticks:{color:'#7dd3fc'},grid:{color:'#083344'}},x:{ticks:{color:'#7dd3fc'},grid:{display:false}}}}});
+$('#exportCSV').onclick=()=>{ const csv='Student,Seekha%,Labs,Homework\n'+students.map(s=>`${s},${70+Math.floor(Math.random()*25)},${5+Math.floor(Math.random()*3)},${8+Math.floor(Math.random()*2)}`).join('\n'); const b=new Blob([csv],{type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='daily-analysis.csv'; a.click(); };
+
+// TEACHER MODE
+const chapters={ 'Class 3':'Paint Tiranga','Class 4':'Typing Master','Class 5':'Internet Basics','Class 6':'MS Word','Class 7':'Scratch','Class 8':'HTML','Class 9':'Python','Class 10':'Database','Class 11':'File Handling','Class 12':'SQL' };
+$('#classSelect').onchange=e=>{ $('#chapterName').textContent=chapters[e.target.value]; };
+$('#attDate').valueAsDate=new Date();
+function renderAttendance(){ const date=$('#attDate').value; const data=load('ct-att-'+date,{}); let html='<div class="grid grid-cols-2 gap-1">'; for(let i=1;i<=30;i++){ const present=data[i]!==false; html+=`<div class="flex justify-between items-center p-1 rounded bg-black/20"><span>Student ${i}</span><button data-i="${i}" class="attBtn text-[10px] px-2 py-0.5 rounded ${present?'bg-emerald-700/50':'bg-red-700/50'}">${present?'Present':'Absent'}</button></div>`; } html+='</div>'; $('#attendance').innerHTML=html; $$('.attBtn').forEach(b=>b.onclick=()=>{ const d=load('ct-att-'+$('#attDate').value,{}); d[b.dataset.i]=!(d[b.dataset.i]!==false); store('ct-att-'+$('#attDate').value,d); renderAttendance(); }); }
+renderAttendance(); $('#attDate').onchange=renderAttendance; $('#saveAtt').onclick=()=>{ addXP(5); alert('Attendance saved locally!'); };
+
+// CHARTS
+new Chart($('#radarChart'),{type:'radar',data:{labels:['Theory','Practical','Discipline','Homework','Lab','Doubt'],datasets:[{label:'Class Avg',data:[80,75,90,70,85,78],borderColor:'#a855f7',backgroundColor:'rgba(168,85,247,.2)'}]},options:{scales:{r:{angleLines:{color:'#334155'},grid:{color:'#334155'},pointLabels:{color:'#cbd5e1'},ticks:{display:false}}},plugins:{legend:{display:false}}}});
+new Chart($('#barChart'),{type:'bar',data:{labels:['3','4','5','6','7','8','9','10'],datasets:[{label:'Avg Marks',data:[78,82,85,80,88,84,90,87],backgroundColor:'#22d3ee'}]},options:{plugins:{legend:{display:false}},scales:{y:{ticks:{color:'#7dd3fc'},grid:{color:'#083344'}},x:{ticks:{color:'#7dd3fc'}}}}});
+
+// TIMETABLE
+const tt=load('ct-tt',{}); function renderTT(){ const days=['Mon','Tue','Wed','Thu','Fri','Sat']; let html='<div></div>'; for(let p=1;p<=6;p++) html+=`<div class="text-center font-bold">${p}</div>`; days.forEach(d=>{ html+=`<div class="font-semibold">${d}</div>`; for(let p=1;p<=6;p++){ const k=`${d}-${p}`; html+=`<input data-k="${k}" value="${tt[k]||'Computer'}" class="bg-black/30 rounded px-1 py-0.5 outline-none border border-white/5">`; } }); $('#timetable').innerHTML=html; $$('#timetable input').forEach(i=>i.onchange=()=>{ tt[i.dataset.k]=i.value; store('ct-tt',tt); }); } renderTT();
+
+// GAMIFICATION
+let xp=load('ct-xp',1240); $('#xp').textContent=xp; function addXP(n){ xp+=n; $('#xp').textContent=xp; store('ct-xp',xp); }
+const leaders=[{n:'Cyber-Tandav',xp:1240},{n:'Aarav',xp:980},{n:'Priya',xp:910},{n:'Rohan',xp:870}]; $('#leaderboard').innerHTML=leaders.map((l,i)=>`<div class="flex justify-between p-1 rounded bg-black/20"><span>${i+1}. ${l.n}</span><span class="text-amber-300">${l.xp} XP</span></div>`).join('');
+
+// LAB
+const parts=[
+{ id:'cpu', name:'CPU', hi:'CPU kya hai? Computer ka dimag. Sab calculations yahin hota hai.', tip:'Teacher Tip: Intel/AMD generations compare karayein.'},
+{ id:'ram', name:'RAM', hi:'RAM short-term memory hai. Power off hote hi data gayab.', tip:'4GB vs 8GB live demo.'},
+{ id:'mobo', name:'Motherboard', hi:'Sab parts ko jodne wala board.', tip:'Sockets dikhayein.'},
+{ id:'ssd', name:'SSD', hi:'Fast storage, no moving parts.', tip:'HDD vs SSD speed test.'},
+{ id:'hdd', name:'HDD', hi:'Purana magnetic storage.', tip:'Backup importance.'},
+{ id:'gpu', name:'GPU', hi:'Graphics card, gaming aur AI ke liye.', tip:'Integrated vs dedicated.'},
+{ id:'smps', name:'SMPS', hi:'Power supply unit.', tip:'Wattage calculation.'},
+{ id:'monitor', name:'Monitor', hi:'Output device.', tip:'Resolution samjhayein.'},
+{ id:'kb', name:'Keyboard', hi:'Input device.', tip:'Typing practice.'},
+{ id:'mouse', name:'Mouse', hi:'Pointer control.', tip:'DPI explain.'}
+];
+function renderParts(){ $('#partsGrid').innerHTML=parts.map(p=>`<div class="pc-card glass p-3 rounded-xl text-center cursor-pointer hover:scale-105" data-id="${p.id}"><div class="text-3xl mb-1">💻</div><div class="text-xs font-bold">${p.name}</div></div>`).join(''); $$('#partsGrid .pc-card').forEach(c=>c.onclick=()=>{ const p=parts.find(x=>x.id===c.dataset.id); $('#partInfo').innerHTML=`<b>${p.name}:</b> ${p.hi}<br><span class="text-amber-300 text-xs">${p.tip}</span>`; }); }
+renderParts();
+$('#dragParts').innerHTML=parts.slice(0,6).map(p=>`<div draggable="true" data-id="${p.id}" class="p-2 rounded bg-black/40 border border-white/10 text-xs cursor-grab">${p.name}</div>`).join('');
+let dragId=null; $$('#dragParts [draggable]').forEach(d=>{ d.ondragstart=e=>dragId=e.target.dataset.id; });
+const dropZone=$('#dropZone'); dropZone.ondragover=e=>e.preventDefault(); dropZone.ondrop=e=>{ e.preventDefault(); const ok=['cpu','ram','mobo','ssd'].includes(dragId); if(ok){ dropZone.innerHTML+=`<div class="absolute text-[10px] px-1 py-0.5 rounded bg-emerald-600/80" style="left:${20+Math.random()*60}%;top:${20+Math.random()*60}%">${dragId.toUpperCase()}</div>`; $('#assembleMsg').textContent='Shabash! Sahi lagaya!'; $('#assembleMsg').className='mt-2 text-center font-bold text-emerald-400'; addXP(10); } else { $('#spark').classList.remove('hidden'); $('#spark').innerHTML='<div class="w-full h-full" style="background:radial-gradient(circle, rgba(255,69,0,.8) 0%, transparent 60%); animation:pulse .4s"></div>'; setTimeout(()=>$('#spark').classList.add('hidden'),400); $('#assembleMsg').textContent='Galat part! Spark!'; $('#assembleMsg').className='mt-2 text-center font-bold text-red-400'; } };
+$('#openLab').onclick=()=>{$('#labModal').classList.remove('hidden');}; $('#closeLab').onclick=()=>$('#labModal').classList.add('hidden'); $('#labQuick').onclick=()=>$('#labModal').classList.remove('hidden');
+$$('.labtab').forEach(b=>b.onclick=()=>{ $$('.labtab').forEach(x=>x.classList.remove('bg-cyan-900/30')); b.classList.add('bg-cyan-900/30'); $$('.labpane').forEach(p=>p.classList.add('hidden')); $('#lab'+b.dataset.labtab.charAt(0).toUpperCase()+b.dataset.labtab.slice(1)).classList.remove('hidden'); });
+
+// FAKE WINDOWS
+const winApps=['Notepad','Paint','Browser','Explorer']; $('#winApps').innerHTML=winApps.map(a=>`<button data-app="${a}" class="w-12 h-12 grid place-items-center glass rounded hover:scale-110"><span class="text-xl">${a==='Notepad'?'📝':a==='Paint'?'🎨':a==='Browser'?'🌐':'📁'}</span></button>`).join(''); $$('#winApps button').forEach(b=>b.onclick=()=>openWin(b.dataset.app)); $('#startBtn').onclick=()=>$('#startMenu').classList.toggle('hidden'); $$('#startMenu button').forEach(b=>b.onclick=()=>{ openWin(b.dataset.app); $('#startMenu').classList.add('hidden'); }); function openWin(name){ $('#winWindow').classList.remove('hidden'); $('#winTitle').textContent=name; } $('#winClose').onclick=()=>$('#winWindow').classList.add('hidden');
+
+// TERMINAL
+const termOut=$('#termOut'), termIn=$('#termIn'); termIn.onkeydown=e=>{ if(e.key==='Enter'){ const cmd=termIn.value.trim().toLowerCase(); let out=''; if(cmd==='help') out='Commands: dir, ipconfig, ping localhost, help'; else if(cmd==='dir') out=' Volume in drive C is TANDAV\n Directory of C:\\TANDAV\n 12-06-2025  10:00 AM    <DIR>          Projects\n 12-06-2025  10:05 AM             1,024 notes.txt'; else if(cmd==='ipconfig') out='IPv4 Address . . . . . : 192.168.1.10 (Lab Only)'; else if(cmd==='ping localhost') out='Pinging ::1 with 32 bytes...\nReply from ::1: time<1ms\nPing statistics: 0% loss'; else out=`'${cmd}' not allowed. Ethical commands only.`; termOut.innerHTML+=`<div><span class="text-green-400">C:\\TANDAV&gt;</span> ${cmd}</div><div class="opacity-80">${out}</div>`; termOut.scrollTop=termOut.scrollHeight; termIn.value=''; } };
+
+// AI MODAL - PEAK LEVEL
+function openAI(name){ 
+  const realLinks = {
+    'CHATGPT':'https://chat.openai.com',
+    'COPILOT':'https://copilot.microsoft.com',
+    'META':'https://meta.ai',
+    'FRIDAY':'local'
+  };
+  if(name!=='FRIDAY'){
+    // Open real AI in new tab for peak power
+    window.open(realLinks[name], '_blank');
+    $('#aiModal').classList.remove('hidden'); 
+    $('#aiTitle').textContent=name + ' ⚡ LIVE';
+    $('#aiChat').innerHTML=`<div class="p-3 rounded bg-emerald-900/30 border border-emerald-500/30">
+      <div class="font-bold text-emerald-300">✓ ${name} OPENED</div>
+      <div class="text-xs mt-1">Original ${name} new tab mein khul gaya hai. Peak-level power ke liye wahan use karo.</div>
+      <div class="text-[10px] opacity-70 mt-2">Ya yahan quick help le sakte ho - main bridge hoon.</div>
+    </div>`;
+    $('#aiInput').dataset.bot=name;
+    addXP(5);
+    return;
+  }
+  $('#aiModal').classList.remove('hidden'); 
+  $('#aiTitle').textContent='FRIDAY ⚡ PEAK AI'; 
+  $('#aiChat').innerHTML=`<div class="p-2 rounded bg-white/5">Namaste Sir! Main FRIDAY hoon - Tony Stark level AI. Ethical hacking, coding, notes, sab mein peak help. Kya chahiye?</div>`; 
+  $('#aiInput').dataset.bot=name; 
+}
+$$('.dock-btn').forEach(b=>b.onclick=()=>openAI(b.dataset.ai==='friday'?'FRIDAY':b.dataset.ai.toUpperCase())); 
+$('#closeAi').onclick=()=>$('#aiModal').classList.add('hidden');
+$('#aiSend').onclick=sendAI; 
+$('#aiInput').onkeydown=e=>{if(e.key==='Enter')sendAI()};
+async function sendAI(){ 
+  const txt=$('#aiInput').value.trim(); if(!txt)return; 
+  const bot=$('#aiInput').dataset.bot; 
+  const box=$('#aiChat'); 
+  box.innerHTML+=`<div class="text-right mb-2"><span class="inline-block p-2 rounded bg-cyan-900/40 max-w-[80%] text-left">${txt}</span></div>`; 
+  $('#aiInput').value=''; 
+  box.scrollTop=box.scrollHeight;
+  
+  // typing indicator
+  const typing=document.createElement('div'); typing.id='typing'; typing.innerHTML=`<span class="inline-block p-2 rounded bg-white/10"><span class="animate-pulse">⚡ ${bot} soch raha hai...</span></span>`; box.appendChild(typing); box.scrollTop=box.scrollHeight;
+  
+  let reply='';
+  try{
+    if(bot==='FRIDAY'){
+      // PEAK FRIDAY - multi-source intelligence
+      const lower=txt.toLowerCase();
+      if(/sql|xss|hack|payload|exploit/i.test(txt)){
+        reply=`🔐 **Ethical Hacking Mode - FRIDAY**
+
+**${txt}** ka theory:
+
+• **SQLi**: Prepared statements, parameterized queries, input sanitization
+• **XSS**: Output encoding, CSP headers, HttpOnly cookies
+• **Defense**: OWASP Top 10, WAF rules, least privilege
+
+**Lab Setup**: DVWA / OWASP Juice Shop apne system par
+**Law**: IT Act 2000 Section 43, 66 - sirf authorized testing
+
+Practical demo chahiye? Lab mein step-by-step dikhaun?`;
+      } else if(/code|program|python|javascript|html/i.test(txt)){
+        reply=`💻 **FRIDAY Code Engine**
+
+\`\`\`
+// ${txt} - sample
+function secureExample(input){
+  // 1. Validate
+  if(!input) return null;
+  // 2. Sanitize
+  const clean = input.replace(/[<>"']/g,'');
+  // 3. Process
+  return clean.toUpperCase();
+}
+\`\`\`
+
+Aur detail chahiye? Konsi language?`;
+      } else if(/notes|padhai|syllabus|explain/i.test(txt)){
+        // Try Wikipedia
+        try{
+          const wikiRes=await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(txt.split(' ').slice(0,3).join('_'))}`);
+          if(wikiRes.ok){ const data=await wikiRes.json(); reply=`📚 **${data.title}**\n\n${data.extract}\n\nSource: Wikipedia | Aur deep notes chahiye?`; }
+          else throw 'no wiki';
+        }catch{ reply=`📝 Notes taiyar! "${txt}" par main whiteboard par diagram bana sakta hoon. Konsa topic deep mein?`; }
+      } else {
+        // General intelligence - DuckDuckGo
+        try{
+          const ddg=await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(txt)}&format=json&no_html=1&skip_disambig=1`);
+          const data=await ddg.json();
+          if(data.AbstractText){ reply=`🧠 **FRIDAY Answer**\n\n${data.AbstractText}\n\n${data.AbstractURL?`Source: ${data.AbstractURL}`:''}`; }
+          else if(data.RelatedTopics && data.RelatedTopics[0]){ reply=`💡 ${data.RelatedTopics[0].Text}`; }
+          else { reply=`Ji Sir, "${txt}" par main aapko ethical perspective se samjhata hoon. Cyber security, coding, ya general knowledge - kya focus chahiye?`; }
+        }catch{ reply=`⚡ FRIDAY Online. "${txt}" - main aapki peak help karunga. Thoda specific batao?`; }
+      }
+    } else {
+      // CHATGPT / COPILOT / META - 100X PEAK BOOST - EASY + TECHNICAL
+      const lower=txt.toLowerCase();
+      try{
+        // 1. Massive local knowledge for instant peak answers
+        const peakKnowledge = {
+          'what is hacking': {
+            easy: 'Hacking matlab computer ya phone ke andar ghusna. Jaise koi tala tod ke ghar mein ghuse. Ethical hacking mein hum permission leke security check karte hain, jaise lock test karna.',
+            tech: 'Hacking is the identification and exploitation of vulnerabilities in computer systems, networks, or applications. Methodologies: Reconnaissance (OSINT), Scanning (Nmap), Exploitation (Metasploit in lab), Post-exploitation, Reporting. Follows PTES/OWASP frameworks. Legal under IT Act 2000 Sec 43 with authorization.',
+            full: 'Types: 1) White Hat - authorized, 2) Black Hat - malicious, 3) Grey Hat. Tools: Kali Linux, Burp Suite, Wireshark (lab only). Defense: Patch management, 2FA, IDS/IPS, principle of least privilege.'
+          },
+          'hacking': {
+            easy: 'Hacking = system mein permission ke bina ya permission ke saath ghusna. Accha hacking security badhata hai.',
+            tech: 'Hacking involves bypassing security controls to access, modify, or disrupt systems. Ethical hacking uses same techniques as attackers but with written consent for defensive purposes.',
+            full: '5 phases: Recon, Scan, Gain Access, Maintain, Clear Tracks. Always document, never attack live systems without scope.'
+          },
+          'sql injection': {
+            easy: 'SQL injection mein hacker website ke form mein galat code dal deta hai, jaise login mein \' OR 1=1 -- likh de, aur database khul jaye.',
+            tech: 'SQLi is injection of malicious SQL statements via unsanitized user input. Types: Error-based, Union-based, Blind (Boolean/Time). Exploits lack of prepared statements.',
+            full: 'Prevention: Prepared Statements (PDO, parameterized queries), input validation (whitelist), WAF rules, least privilege DB user, disable error messages. Example vulnerable: SELECT * FROM users WHERE id = user_input'
+          },
+          'xss': {
+            easy: 'XSS mein hacker website mein script daal deta hai, jo dusre users ke browser mein chal jaye. Jaise comment mein script tag alert',
+            tech: 'Cross-Site Scripting injects client-side scripts. Types: Stored (DB), Reflected (URL), DOM-based. Bypasses SOP.',
+            full: 'Mitigation: Output encoding (HTML entities), Content-Security-Policy, HttpOnly + Secure cookies, DOMPurify, input sanitization.'
+          },
+          'phishing': {
+            easy: 'Phishing = nakli email ya message bhej ke password churana. Jaise bank ka nakli SMS.',
+            tech: 'Phishing is social engineering to steal credentials via spoofed communications. Techniques: spear phishing, whaling, smishing.',
+            full: 'Defense: SPF/DKIM/DMARC, user training, MFA, email filtering.'
+          },
+          'malware': {
+            easy: 'Malware = kharab software jo computer ko bigad de. Virus jaise.',
+            tech: 'Malware is malicious code: viruses, worms, trojans, ransomware, spyware. Uses persistence mechanisms, C2 communication.',
+            full: 'Analysis: static/dynamic, sandboxing. Prevention: EDR, updates, least privilege.'
+          },
+          'firewall': {
+            easy: 'Firewall = darwaza jo galat logon ko roke. Internet ka security guard.',
+            tech: 'Firewall filters network traffic based on rules (ACLs). Types: packet-filtering, stateful, NGFW with DPI.',
+            full: 'Configure: default deny, allow specific ports, logging enabled.'
+          },
+          'vpn': {
+            easy: 'VPN = internet mein secret tunnel. Jaise chupke baat karna.',
+            tech: 'VPN creates encrypted tunnel using IPsec/WireGuard/OpenVPN. Provides confidentiality, integrity.',
+            full: 'Use cases: remote access, privacy. Choose no-log provider.'
+          },
+          'what is ai': {
+            easy: 'AI matlab computer ko akal dena. Jaise robot soch sake.',
+            tech: 'AI simulates human intelligence via ML, deep learning, neural networks. Subsets: NLP, computer vision.',
+            full: 'Applications: cybersecurity threat detection, automation. Models: transformers, CNNs.'
+          }
+        };
+        
+        let easy='', tech='', full='';
+        const kb = peakKnowledge[lower] || peakKnowledge[lower.replace('what is ','')];
+        
+        if(kb){
+          easy = kb.easy; tech = kb.tech; full = kb.full;
+        } else {
+          // Fetch real data - Wikipedia search (best for technical)
+          try{
+            const searchRes = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(txt)}&format=json&origin=*`);
+            const searchData = await searchRes.json();
+            if(searchData.query?.search?.[0]){
+              const title = searchData.query.search[0].title;
+              const sumRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+              if(sumRes.ok){ const sum = await sumRes.json(); tech = sum.extract; }
+            }
+          }catch{}
+          
+          // DuckDuckGo for backup
+          if(!tech){
+            try{
+              const ddg = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(txt)}&format=json&no_html=1&skip_disambig=1`);
+              const d = await ddg.json(); tech = d.AbstractText || d.RelatedTopics?.[0]?.Text || '';
+            }catch{}
+          }
+          
+          if(!tech) tech = `${txt} ek critical concept hai jo cybersecurity, technology ya science se related hai.`;
+          
+          // Generate EASY version from technical - TOOOO MUCH EASY
+          const firstSentence = tech.split('. ')[0];
+          easy = `BILKUL SIMPLE (Jaise 5 saal ke bacche ko samjhana):
+👉 "${txt}" ka matlab hai - ${firstSentence.toLowerCase()}.
+👉 Real life mein socho: ${txt.toLowerCase().includes('hack') ? 'jaise koi chabi bina tala kholna, par accha wala tala check karne ke liye' : txt.toLowerCase().includes('sql') ? 'jaise dukaan ke register mein galat bill dalna' : 'jaise koi machine kaise kaam karti hai dekhna'}.
+👉 Isse daro mat, seekho!`;
+          full = `COMPLETE EXPLAIN (100X):
+1️⃣ KYA HAI: ${firstSentence}
+2️⃣ KAISE KAAM KARTA: ${tech}
+3️⃣ EXAMPLE: Real lab mein test karo
+4️⃣ SAFE KAISE RAHE: Permission lo, legal raho
+5️⃣ PRO TIP: ${txt} ko practice ke liye DVWA ya TryHackMe use karo`;
+        }
+        
+        // 100X formatting per bot
+        if(bot==='CHATGPT'){
+          reply=`💬 **ChatGPT • 100X PEAK**
+
+**🟢 EASY LANGUAGE (5 saal ke bacche jaisa):**
+${easy}
+
+**🔵 TECHNICAL LANGUAGE (Engineer Level):**
+${tech}
+
+**📚 FULLY EXPLAINED:**
+${full}
+
+**💡 Example:** ${txt} ko lab mein test karne ke liye pehle permission lo, phir virtual machine use karo.
+
+Aur deep dive chahiye?`;
+        } else if(bot==='COPILOT'){
+          reply=`✦ **Copilot • 100X BOOST**
+
+**Easy:** ${easy}
+
+**Technical:** ${tech}
+
+**Code/Steps:**
+\`\`\`
+// ${txt}
+// 1. Understand concept
+// 2. Setup lab environment
+// 3. Test with permission only
+// 4. Document findings
+\`\`\`
+
+${full}`;
+        } else if(bot==='META'){
+          reply=`∞ **Meta AI • Supercharged**
+
+Hey bestie! "${txt}" 😊
+
+**Simple wala:** 
+${easy}
+
+**Pro wala:**
+${tech}
+
+**Poora samjhao toh:**
+${full}
+
+Samajh aaya? Aur koi doubt?`;
+        }
+        
+      }catch(e){
+        reply=`${bot} 100X mode active! "${txt}" - thoda network issue, par main full easy + technical dono mein samjhata hoon. Dobara try karo.`;
+      }
+    }
+  }catch(e){ reply='Error aaya, par FRIDAY ready hai. Dobara pucho.'; }
+  
+  setTimeout(()=>{
+    typing.remove();
+    box.innerHTML+=`<div class="mb-2"><span class="inline-block p-2 rounded bg-white/10 max-w-[90%] whitespace-pre-wrap">${reply}</span></div>`; 
+    box.scrollTop=box.scrollHeight;
+    addXP(2);
+  },800+Math.random()*700);
+}
+
+// EXAM
+const questions=[
+{q:'SQL Injection se bachne ka best tarika?',o:['Input ko trust karna','Prepared Statements','Password hide karna','CSS use'],a:1},
+{q:'XSS kya hai?',o:['Server crash','Browser me malicious script','Network cable','CPU overheat'],a:1},
+{q:'Indian IT Act 2000 Section 66?',o:['Typing speed','Hacking punishment','Paint tool','Email'],a:1},
+{q:'CSRF se bachav?',o:['CSRF Token','Large font','GIF','Shutdown'],a:0},
+{q:'Ethical hacker ko kya chahiye?',o:['Permission','No permission','Virus','Money'],a:0}
+];
+let timeLeft=600, timerInt;
+$('#openExam').onclick=()=>{ $('#examModal').classList.remove('hidden'); renderQuiz(); startTimer(); };
+$('#closeExam').onclick=()=>{ $('#examModal').classList.add('hidden'); clearInterval(timerInt); };
+function renderQuiz(){ $('#quizBox').innerHTML=questions.map((qq,i)=>`<div class="p-3 rounded bg-black/30 border border-white/5"><div class="text-sm font-semibold mb-2">${i+1}. ${qq.q}</div><div class="grid md:grid-cols-2 gap-1">${qq.o.map((op,j)=>`<label class="text-xs flex items-center gap-2 p-1 rounded hover:bg-white/5"><input type="radio" name="q${i}" value="${j}" class="accent-cyan-500"> ${op}</label>`).join('')}</div></div>`).join(''); }
+function startTimer(){ clearInterval(timerInt); timeLeft=600; timerInt=setInterval(()=>{ timeLeft--; const m=String(Math.floor(timeLeft/60)).padStart(2,'0'), s=String(timeLeft%60).padStart(2,'0'); $('#timer').textContent=`${m}:${s}`; if(timeLeft<=0){ clearInterval(timerInt); submitQuiz(); } },1000); }
+$('#submitQuiz').onclick=submitQuiz;
+function submitQuiz(){ clearInterval(timerInt); let score=0; questions.forEach((qq,i)=>{ const sel=document.querySelector(`input[name="q${i}"]:checked`); if(sel && +sel.value===qq.a) score++; }); const percent=Math.round(score/questions.length*100); alert(`Result: ${score}/${questions.length} (${percent}%)`); generateCertificate(percent); addXP(20); }
+function generateCertificate(pct){ const c=$('#certCanvas'),x=c.getContext('2d'); x.fillStyle='#020617'; x.fillRect(0,0,800,560); x.fillStyle='#00bfff'; x.font='bold 36px Orbitron'; x.textAlign='center'; x.fillText('Cyber-Tandav OS',400,80); x.fillStyle='#fff'; x.font='24px Hind'; x.fillText('Certificate of Completion',400,130); x.font='20px Hind'; x.fillText('Ethical Hacker - Theory Assessment',400,170); x.fillText(`Score: ${pct}%`,400,230); x.fillText('Issued for Ethical Learning Only',400,300); x.fillStyle='#22d3ee'; x.font='16px Hind'; x.fillText('Indian IT Act 2000 Compliant • No illegal activity',400,360); const a=document.createElement('a'); a.href=c.toDataURL(); a.download='Cyber-Tandav-Certificate.png'; a.click(); }
+
+// VIRTUAL SPACES
+$$('.space-btn').forEach(b=>b.onclick=()=>{ $('#spaceStatus').textContent=b.textContent+' Active'; document.body.style.background=`radial-gradient(1000px 600px at 50% 0%, var(--primary) 0%, #020617 70%)`; if(b.dataset.space==='lab') initParticles(80); addXP(2); });
+
+// ROADMAP
+const roadmapSteps=['Beginner','Networking','Linux','Web Security','Professional Testing','CEH/OSCP Prep','Bug Bounty Ethics','Mentor','Consultant'];
+$('#roadmap').innerHTML=roadmapSteps.map((s,i)=>`<div class="relative"><div class="absolute -left-[27px] top-0 w-4 h-4 rounded-full" style="background:var(--primary);box-shadow:0 0 10px var(--primary)"></div><div class="font-semibold text-cyan-200">${s}</div><div class="text-[10px] opacity-70">Step ${i+1} • Theory + Legal Lab</div></div>`).join('');
+
+// LIVE PROJECT MODE - FIXED
+$('#openProject').onclick=()=>{ $('#projectModal').classList.remove('hidden'); initProjectMode(); };
+$('#closeProject').onclick=()=>$('#projectModal').classList.add('hidden');
+$$('.projTab').forEach(b=>b.onclick=()=>{ $$('.projTab').forEach(x=>x.classList.remove('bg-violet-900/30')); b.classList.add('bg-violet-900/30'); $$('.projPane').forEach(p=>p.classList.add('hidden')); $('#proj'+b.dataset.tab.charAt(0).toUpperCase()+b.dataset.tab.slice(1)).classList.remove('hidden'); });
+
+function initProjectMode(){
+  const team=['Aarav (Frontend)','Priya (Design)','Rohan (Backend)','Anaya (Testing)','Kabir (Content)','You (Mentor)'];
+  $('#teamList').innerHTML=team.map((t,i)=>`<div class="flex items-center gap-1"><span class="w-2 h-2 rounded-full ${i<5?'bg-green-400 animate-pulse':'bg-violet-400'}"></span>${t} <span class="text-[9px] opacity-60">${i<5?'Online':'Lead'}</span></div>`).join('');
+  
+  const tasks=[
+    {t:'Homepage Design',s:'Done',c:'text-emerald-400'},
+    {t:'About Page',s:'In Progress',c:'text-amber-400'},
+    {t:'Contact Form',s:'Pending',c:'text-gray-400'},
+    {t:'Gallery',s:'Pending',c:'text-gray-400'},
+    {t:'Responsive CSS',s:'Done',c:'text-emerald-400'},
+    {t:'Deploy',s:'Ready',c:'text-violet-400'}
+  ];
+  $('#projectTasks').innerHTML=tasks.map(x=>`<div class="flex justify-between"><span>${x.t}</span><span class="${x.c}">${x.s}</span></div>`).join('');
+  
+  const projChat=load('ct-projchat',[
+    {u:'Priya',m:'Sir homepage ka color kaisa rakhu?'},
+    {u:'You',m:'Violet gradient use karo, Cyber-Tandav theme'},
+    {u:'Rohan',m:'Backend ready hai!'}
+  ]);
+  function renderProjChat(){ $('#projChat').innerHTML=projChat.map(c=>`<div><b class="text-violet-300">${c.u}:</b> ${c.m}</div>`).join(''); $('#projChat').scrollTop=9999; }
+  renderProjChat();
+  $('#projInput').onkeydown=e=>{ if(e.key==='Enter'){ const v=e.target.value.trim(); if(!v)return; projChat.push({u:'You',m:v}); store('ct-projchat',projChat); e.target.value=''; renderProjChat(); setTimeout(()=>{ projChat.push({u:'Aarav',m:'Ok sir, kar raha hu!'}); store('ct-projchat',projChat); renderProjChat(); },800); } };
+  
+  $('#runProject').onclick=()=>{ const html=$('#htmlCode').value; const css=`<style>${$('#cssCode').value}
+/* === 100X MAX THEME BOOST === */
+#fx2{position:fixed;inset:0;z-index:-1;pointer-events:none}
+#evil-layer{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .5s}
+[data-theme="evil"] #evil-layer{opacity:1}
+.blood-drip{position:absolute;top:-20px;width:3px;height:80px;background:linear-gradient(#ff5c5c,#ff3333,transparent);animation:drip 4s linear infinite;filter:blur(.5px)}
+@keyframes drip{to{transform:translateY(110vh)}}
+.evil-eye{position:absolute;width:40px;height:40px;background:radial-gradient(circle,#fff 40%,#ff5c5c 50%,#2a0000 75%);border-radius:50%;box-shadow:0 0 20px #f00, inset 0 0 10px #000;animation:blink 5s infinite}
+@keyframes blink{0%,90%,100%{transform:scaleY(1)}95%{transform:scaleY(0.1)}}
+.fog{position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(255,90,90,.18),transparent 60%),radial-gradient(circle at 70% 30%,rgba(40,0,0,.2),transparent 50%);animation:fogmove 30s linear infinite}
+@keyframes fogmove{0%{transform:translateX(-10%)}100%{transform:translateX(10%)}}
+
+[data-theme="attractive"] body{background:radial-gradient(800px 600px at 70% 20%,#2a004f 0%,#1a001f 60%,#000 100%)}
+.butterfly{position:fixed;width:24px;height:24px;pointer-events:none;z-index:5;animation:fly 20s linear infinite}
+@keyframes fly{0%{transform:translate(0,100vh) rotate(0deg)}100%{transform:translate(100vw,-20vh) rotate(720deg)}}
+
+[data-theme="lovely"] body{background:radial-gradient(1000px 700px at 50% 0%,#ff1493 0%,#2a0015 50%,#000 100%)}
+.rose-petal{position:fixed;top:-20px;width:18px;height:18px;background:radial-gradient(#ff69b4,#ff1493);border-radius:50% 0 50% 50%;transform:rotate(45deg);animation:fall 12s linear infinite;opacity:.8}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+
+[data-theme="aggressive"] body{background:linear-gradient(#1f0a00,#ff4500,#1f0a00)}
+.lava{position:fixed;bottom:0;left:0;width:100%;height:30%;background:linear-gradient(to top,#ff4500,#ff8c00,transparent);filter:blur(8px);animation:lavaPulse 2s ease-in-out infinite;z-index:-1}
+@keyframes lavaPulse{0%,100%{height:28%}50%{height:35%}}
+.fire-spark{position:fixed;width:4px;height:4px;background:#ff0;border-radius:50%;box-shadow:0 0 10px #ff4500;animation:spark 3s linear infinite}
+
+[data-theme="suitup"] .hud-corner{position:fixed;width:120px;height:120px;border:2px solid var(--primary);pointer-events:none;z-index:50;opacity:.7}
+.hud-tl{top:10px;left:10px;border-right:none;border-bottom:none;box-shadow:0 0 20px var(--primary)}
+.hud-tr{top:10px;right:10px;border-left:none;border-bottom:none;box-shadow:0 0 20px var(--primary)}
+.hud-bl{bottom:80px;left:10px;border-right:none;border-top:none}
+.hud-br{bottom:80px;right:10px;border-left:none;border-top:none}
+.arc-reactor{position:fixed;top:12px;left:50%;transform:translateX(-50%);width:60px;height:60px;border-radius:50%;background:conic-gradient(from 0deg,var(--primary),transparent 30%,var(--accent),transparent 70%,var(--primary));box-shadow:0 0 30px var(--primary), inset 0 0 15px var(--accent);animation:spin 2s linear infinite;z-index:60}
+.scanline{position:fixed;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--primary),transparent);box-shadow:0 0 10px var(--primary);animation:scan 4s linear infinite;z-index:55}
+@keyframes scan{0%{top:0}100%{top:100vh}}
+
+[data-theme="sanatani"] .diya{position:fixed;bottom:90px;width:30px;height:30px;background:radial-gradient(#ffd700,#ff9933);border-radius:50% 50% 50% 50%/60% 60% 40% 40%;box-shadow:0 0 25px #ff9933;animation:flicker 1.5s infinite}
+@keyframes flicker{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.8;transform:scale(1.05)}}
+.om-float{position:fixed;font-size:4rem;color:rgba(255,153,51,.08);animation:omrise 40s linear infinite;pointer-events:none}
+@keyframes omrise{0%{transform:translateY(100vh)}100%{transform:translateY(-20vh)}}
+
+[data-theme="scifi"] .grid3d{position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,65,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,65,.15) 1px,transparent 1px);background-size:50px 50px;transform:perspective(500px) rotateX(60deg);transform-origin:top;animation:gridmove 10s linear infinite;z-index:-1}
+@keyframes gridmove{0%{background-position:0 0}100%{background-position:0 50px}}
+
+</style>`; const js=`<script>${$('#jsCode').value}<\/script>`; const full=html.replace('</head>',css+'</head>').replace('</body>',js+'</body>'); const iframe=$('#previewFrame'); iframe.srcdoc=full; $$('.projTab')[1].click(); addXP(15); $('#projChat').innerHTML+=`<div class="text-emerald-400">✓ Project updated by Mentor</div>`; };
+  
+  $('#exportProject').onclick=()=>{ const zipContent=`HTML:\n${$('#htmlCode').value}\n\nCSS:\n${$('#cssCode').value}\n\nJS:\n${$('#jsCode').value}`; const b=new Blob([zipContent],{type:'text/plain'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='Class12-School-Website-Project.txt'; a.click(); alert('Project exported! Real ZIP ke liye files alag save karein.'); addXP(25); };
+  
+  // Auto-run first time
+  setTimeout(()=>$('#runProject').click(),500);
+}
+
+
+// PERSONAL DIARY - Dukandaar Wala - FIXED
+$('#openDiary').onclick=()=>{ $('#diaryModal').classList.remove('hidden'); initDiary(); };
+$('#closeDiary').onclick=()=>$('#diaryModal').classList.add('hidden');
+
+function initDiary(){
+  $('#dDate').valueAsDate = new Date();
+  renderDiary();
+}
+let diaryData = load('ct-diary', []);
+function renderDiary(filter=''){
+  const body = $('#diaryBody');
+  const filtered = diaryData.filter(e => !filter || (e.party+e.item+e.type).toLowerCase().includes(filter));
+  body.innerHTML = filtered.map((e,i)=>`<tr class="border-t border-white/5 hover:bg-white/5">
+    <td class="p-1">${e.date}</td><td>${e.type}</td><td>${e.party}</td><td>${e.item}</td>
+    <td class="text-right ${e.type.includes('Bikri')||e.type.includes('Jama')?'text-emerald-300':'text-red-300'}">₹${e.amt}</td>
+    <td><button data-i="${diaryData.indexOf(e)}" class="delDiary text-[9px] px-1 rounded bg-red-900/40">x</button></td>
+  </tr>`).join('') || `<tr><td colspan=6 class="p-2 opacity-60 text-center">Koi entry nahi. Pehla hisab likho!</td></tr>`;
+  
+  $$('.delDiary').forEach(b=>b.onclick=()=>{ diaryData.splice(b.dataset.i,1); store('ct-diary',diaryData); renderDiary($('#diarySearch').value.toLowerCase()); addXP(1); });
+  
+  // summary
+  let sale=0, purchase=0, udhaarOut=0, udhaarIn=0;
+  diaryData.forEach(e=>{
+    const amt = +e.amt||0;
+    if(e.type.includes('Bikri')) sale+=amt;
+    if(e.type.includes('Jama')) sale+=amt;
+    if(e.type.includes('Kharid')||e.type.includes('Kharcha')) purchase+=amt;
+    if(e.type.includes('Udhaar Diya')) udhaarOut+=amt;
+    if(e.type.includes('Udhaar Liya')) udhaarIn+=amt;
+  });
+  $('#sumSale').textContent = '₹'+sale;
+  $('#sumPurchase').textContent = '₹'+purchase;
+  $('#sumUdhaarOut').textContent = '₹'+udhaarOut;
+  $('#sumBalance').textContent = '₹'+(sale - purchase + udhaarIn - udhaarOut);
+}
+$('#addDiary').onclick=()=>{
+  const entry = {
+    date: $('#dDate').value || new Date().toISOString().slice(0,10),
+    type: $('#dType').value,
+    party: $('#dParty').value||'-',
+    item: $('#dItem').value||'-',
+    amt: $('#dAmt').value||0,
+    note: $('#dNote').value||''
+  };
+  if(!entry.amt || entry.amt<=0){ alert('Rakam dalo bhai!'); return; }
+  diaryData.unshift(entry);
+  store('ct-diary', diaryData);
+  renderDiary();
+  $('#dParty').value=''; $('#dItem').value=''; $('#dAmt').value=''; $('#dNote').value='';
+  addXP(5);
+  $('#diaryModal h2').classList.add('glow-text');
+  setTimeout(()=>$('#diaryModal h2').classList.remove('glow-text'),800);
+};
+$('#clearDiaryForm').onclick=()=>{ $('#dParty').value=''; $('#dItem').value=''; $('#dAmt').value=''; $('#dNote').value=''; };
+$('#diarySearch').oninput=e=>renderDiary(e.target.value.toLowerCase());
+$('#exportDiaryCSV').onclick=()=>{
+  const csv = 'Date,Prakar,Party,Item,Rakam,Note\n' + diaryData.map(e=>`${e.date},${e.type},${e.party},${e.item},${e.amt},${e.note}`).join('\n');
+  const b=new Blob([csv],{type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='Dukandaar-Diary.csv'; a.click();
+};
+$('#exportDiaryPDF').onclick=()=>{
+  const {jsPDF}=window.jspdf; const pdf=new jsPDF(); pdf.setFontSize(14); pdf.text('Personal Diary - Dukandaar Wala',10,12);
+  let y=20; pdf.setFontSize(10);
+  diaryData.slice(0,40).forEach(e=>{ pdf.text(`${e.date} | ${e.type} | ${e.party} | ${e.item} | ₹${e.amt}`,10,y); y+=6; if(y>280){pdf.addPage(); y=12;} });
+  pdf.save('Dukandaar-Diary.pdf');
+};
+
+
+
+// PERSONAL NOTES - Diary Wala with Real Privacy - FIXED
+let notesKey=null, notesUnlocked=false, currentPageId='page1', pages={}, selectedLockType='password', patternPath=[];
+$('#openPersonalNotes').onclick=()=>{ $('#personalNotesModal').classList.remove('hidden'); initPersonalNotes(); };
+$('#closePersonalNotes').onclick=()=>$('#personalNotesModal').classList.add('hidden');
+$('#lockNotes').onclick=()=>{ notesUnlocked=false; notesKey=null; $('#notesContent').classList.add('hidden'); $('#notesLockScreen').classList.remove('hidden'); initPersonalNotes(); };
+
+async function sha256(str){ const b=new TextEncoder().encode(str); const h=await crypto.subtle.digest('SHA-256',b); return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join(''); }
+async function deriveKey(secret,salt){ const e=new TextEncoder(); const km=await crypto.subtle.importKey('raw',e.encode(secret),'PBKDF2',false,['deriveKey']); return crypto.subtle.deriveKey({name:'PBKDF2',salt:e.encode(salt),iterations:150000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['encrypt','decrypt']); }
+async function encryptData(d,k){ const iv=crypto.getRandomValues(new Uint8Array(12)); const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},k,new TextEncoder().encode(JSON.stringify(d))); return {iv:[...iv],ct:[...new Uint8Array(ct)]}; }
+async function decryptData(o,k){ try{ const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:new Uint8Array(o.iv)},k,new Uint8Array(o.ct)); return JSON.parse(new TextDecoder().decode(pt)); }catch{return null} }
+
+function initPersonalNotes(){
+  const cfg=JSON.parse(localStorage.getItem('ct-notes-lock')||'null');
+  if(!cfg){ $('#lockSetup').classList.remove('hidden'); $('#lockUnlock').classList.add('hidden'); setupLockTabs(); }
+  else { $('#lockSetup').classList.add('hidden'); $('#lockUnlock').classList.remove('hidden'); showUnlockUI(cfg); }
+  $('#notesContent').classList.add('hidden'); $('#notesLockScreen').classList.remove('hidden');
+}
+function setupLockTabs(){
+  $$('.lockTab').forEach(b=>{ b.onclick=()=>{ $$('.lockTab').forEach(x=>x.classList.remove('bg-amber-900/40')); b.classList.add('bg-amber-900/40'); $$('.lockPane').forEach(p=>p.classList.add('hidden')); $('#lock'+b.dataset.locktab.charAt(0).toUpperCase()+b.dataset.locktab.slice(1)).classList.remove('hidden'); selectedLockType=b.dataset.locktab; if(b.dataset.locktab==='pattern') initPattern('patternSetup'); }; });
+  $$('.lockTab')[0].click();
+  $('#registerFace').onclick=registerFace;
+  $('#saveLock').onclick=saveLock;
+}
+function initPattern(id){ const c=$('#'+id), x=c.getContext('2d'); const dots=[]; for(let i=0;i<3;i++)for(let j=0;j<3;j++)dots.push({x:40+j*80,y:40+i*80}); patternPath=[]; function draw(p=[]){ x.clearRect(0,0,240,240); x.fillStyle='#ffd700'; dots.forEach(d=>{x.beginPath();x.arc(d.x,d.y,14,0,7);x.fill();}); if(p.length>1){ x.strokeStyle='#ff8c00'; x.lineWidth=4; x.beginPath(); x.moveTo(dots[p[0]].x,dots[p[0]].y); p.slice(1).forEach(i=>x.lineTo(dots[i].x,dots[i].y)); x.stroke(); } } draw(); let down=false; const getPos=e=>{ const r=c.getBoundingClientRect(); const t=e.touches?.[0]||e; return {x:(t.clientX-r.left)*240/r.width, y:(t.clientY-r.top)*240/r.height}; }; const move=e=>{ if(!down) return; const p=getPos(e); dots.forEach((d,i)=>{ if(Math.hypot(p.x-d.x,p.y-d.y)<22 && !patternPath.includes(i)) patternPath.push(i); }); draw(patternPath); }; c.onmousedown=e=>{down=true; patternPath=[];}; c.onmousemove=move; window.addEventListener('mouseup',()=>down=false); c.ontouchstart=e=>{e.preventDefault(); down=true; patternPath=[];}; c.ontouchmove=e=>{e.preventDefault(); move(e)}; c.ontouchend=()=>down=false; }
+
+async function saveLock(){
+  const t=selectedLockType; let cfg={type:t,created:Date.now(),salt:'notes-'+Date.now()};
+  try{
+    if(t==='password'){ const p=$('#setPassword').value, c=$('#confirmPassword').value; if(p.length<4||p!==c) return alert('Password match nahi'); cfg.hash=await sha256(p); notesKey=await deriveKey(p,cfg.salt); }
+    else if(t==='pin'){ const p=$('#setPin').value; if(p.length<4) return alert('4-6 digit'); cfg.hash=await sha256(p); notesKey=await deriveKey(p,cfg.salt); }
+    else if(t==='pattern'){ if(patternPath.length<4) return alert('4 dots chahiye'); const pat=patternPath.join('-'); cfg.hash=await sha256(pat); notesKey=await deriveKey(pat,cfg.salt); }
+    else if(t==='face'){ if(!window.faceId) return alert('Pehle Register dabao'); cfg.credId=window.faceId; const rnd=crypto.getRandomValues(new Uint8Array(32)); notesKey=await crypto.subtle.importKey('raw',rnd,'AES-GCM',true,['encrypt','decrypt']); const exp=await crypto.subtle.exportKey('raw',notesKey); localStorage.setItem('ct-notes-facekey',JSON.stringify([...new Uint8Array(exp)])); }
+    localStorage.setItem('ct-notes-lock',JSON.stringify(cfg));
+    pages={page1:{text:'Namaste! Yeh aapki personal diary hai.',drawing:null,stickies:[],title:'Mera Page 1'}};
+    const enc=await encryptData(pages,notesKey); localStorage.setItem('ct-notes-data',JSON.stringify(enc));
+    alert('Lock set! Ab unlock karo'); initPersonalNotes();
+  }catch(e){ alert('Error: '+e); }
+}
+function showUnlockUI(cfg){ $('#unlockPrompt').innerHTML=`<b>${cfg.type.toUpperCase()}</b> se unlock karo`; $('#unlockInput').classList.toggle('hidden',!['password','pin'].includes(cfg.type)); $('#patternUnlock').classList.toggle('hidden',cfg.type!=='pattern'); $('#useFaceUnlock').classList.toggle('hidden',cfg.type!=='face'); if(cfg.type==='pattern') initPattern('patternUnlock'); $('#unlockInput').value=''; $('#unlockInput').placeholder=cfg.type==='pin'?'PIN dalo':'Password dalo'; }
+$('#unlockBtn').onclick=async()=>{ const cfg=JSON.parse(localStorage.getItem('ct-notes-lock')); const err=$('#lockError'); err.textContent=''; try{ if(['password','pin'].includes(cfg.type)){ const v=$('#unlockInput').value; if(await sha256(v)!==cfg.hash) throw 'Galat!'; notesKey=await deriveKey(v,cfg.salt); } else if(cfg.type==='pattern'){ const pat=patternPath.join('-'); if(await sha256(pat)!==cfg.hash) throw 'Galat pattern'; notesKey=await deriveKey(pat,cfg.salt); } else if(cfg.type==='face'){ await unlockFace(cfg); const raw=JSON.parse(localStorage.getItem('ct-notes-facekey')); notesKey=await crypto.subtle.importKey('raw',new Uint8Array(raw),'AES-GCM',false,['encrypt','decrypt']); } const enc=JSON.parse(localStorage.getItem('ct-notes-data')||'null'); pages=enc? (await decryptData(enc,notesKey))||{} : {page1:{text:'',drawing:null,stickies:[],title:'Page1'}}; openNotes(); }catch(e){ err.textContent=e; } };
+async function registerFace(){ try{ const cred=await navigator.credentials.create({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),rp:{name:'Cyber-Tandav'},user:{id:crypto.getRandomValues(new Uint8Array(16)),name:'user',displayName:'User'},pubKeyCredParams:[{type:'public-key',alg:-7}],authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required'},timeout:60000}}); window.faceId=btoa(String.fromCharCode(...new Uint8Array(cred.rawId))); alert('FaceLock registered!'); }catch(e){ alert('FaceLock nahi hua: '+e.message); } }
+async function unlockFace(cfg){ const id=Uint8Array.from(atob(cfg.credId),c=>c.charCodeAt(0)); await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),allowCredentials:[{id,type:'public-key'}],userVerification:'required'}}); }
+$('#useFaceUnlock').onclick=()=>$('#unlockBtn').click();
+
+function openNotes(){ $('#notesLockScreen').classList.add('hidden'); $('#notesContent').classList.remove('hidden'); $('#notesContent').classList.add('flex'); notesUnlocked=true; renderPages(); loadPage(currentPageId); initNotesCanvas(); addXP(10); }
+function renderPages(){ $('#pagesList').innerHTML=Object.keys(pages).map(id=>`<div data-id="${id}" class="p-1.5 rounded cursor-pointer ${id===currentPageId?'bg-amber-700':'hover:bg-black/30'}">${pages[id].title}</div>`).join(''); $$('#pagesList div').forEach(d=>d.onclick=()=>{ savePage(); currentPageId=d.dataset.id; renderPages(); loadPage(currentPageId); }); }
+$('#newPage').onclick=()=>{ const id='page'+(Date.now()%10000); pages[id]={text:'',drawing:null,stickies:[],title:'Page '+(Object.keys(pages).length+1)}; currentPageId=id; renderPages(); loadPage(id); };
+function loadPage(id){ const p=pages[id]||{}; $('#notesText').value=p.text||''; if(p.drawing){ const img=new Image(); img.onload=()=>{ nctx.clearRect(0,0,nc.width,nc.height); nctx.drawImage(img,0,0,nc.width,nc.height); }; img.src=p.drawing; } else nctx.clearRect(0,0,nc.width,nc.height); $('#notesStickies').innerHTML=''; (p.stickies||[]).forEach(s=>addSticky(s.text,s.x,s.y)); }
+function savePage(){ if(!notesUnlocked) return; pages[currentPageId].text=$('#notesText').value; pages[currentPageId].drawing=nc.toDataURL(); pages[currentPageId].stickies=[...document.querySelectorAll('#notesStickies .sticky-note')].map(n=>({text:n.innerText,x:parseInt(n.style.left),y:parseInt(n.style.top)})); }
+const nc=$('#notesCanvas'), nctx=nc.getContext('2d'); function initNotesCanvas(){ nc.width=1600; nc.height=900; nctx.lineCap='round'; nctx.lineJoin='round'; } let nd=false, nl={}; function np(e){ const r=nc.getBoundingClientRect(); const t=e.touches?.[0]||e; return {x:(t.clientX-r.left)*nc.width/r.width, y:(t.clientY-r.top)*nc.height/r.height}; } nc.addEventListener('mousedown',e=>{ nd=true; nl=np(e); }); nc.addEventListener('mousemove',e=>{ if(!nd) return; const p=np(e); nctx.globalCompositeOperation=$('#notesTool').value==='Eraser'?'destination-out':'source-over'; nctx.strokeStyle=$('#notesTool').value==='Eraser'?'rgba(0,0,0,1)':$('#notesColor').value; nctx.lineWidth=$('#notesTool').value==='Eraser'?25:$('#notesSize').value; nctx.beginPath(); nctx.moveTo(nl.x,nl.y); nctx.lineTo(p.x,p.y); nctx.stroke(); nl=p; if($('#notesTool').value==='Laser'){ setTimeout(()=>{loadPage(currentPageId)},350); } }); window.addEventListener('mouseup',()=>nd=false); nc.addEventListener('touchstart',e=>{e.preventDefault(); nd=true; nl=np(e)}); nc.addEventListener('touchmove',e=>{e.preventDefault(); if(!nd)return; const p=np(e); nctx.strokeStyle=$('#notesColor').value; nctx.lineWidth=$('#notesSize').value; nctx.beginPath(); nctx.moveTo(nl.x,nl.y); nctx.lineTo(p.x,p.y); nctx.stroke(); nl=p;}); nc.addEventListener('touchend',()=>nd=false);
+let hist=[], redo=[]; function push(){ hist.push(nctx.getImageData(0,0,nc.width,nc.height)); if(hist.length>25)hist.shift(); } setTimeout(push,500);
+
+// --- 40X MAX ENHANCEMENTS ---
+const colorPalette = ['#8b4513','#000000','#ff0000','#00ff00','#0000ff','#ffff00','#ff00ff','#00ffff','#ff8c00','#800080','#008000','#ffc0cb','#a52a2a','#4b0082','#ff4500','#2e8b57','#dc143c','#20b2aa','#ff1493','#7fff00','#ffd700','#6a5acd','#ff6347','#40e0d0','#ee82ee','#f0e68c','#dda0dd','#b0c4de','#ffdab9','#e6e6fa','#778899','#b22222','#228b22','#ff69b4','#cd5c5c','#4b0082','#20b2aa','#87cefa','#32cd32','#ff8c00'];
+$('#colorPalette').innerHTML = colorPalette.map(c=>`<div data-c="${c}" style="background:${c}" class="w-3 h-3 rounded-sm cursor-pointer border border-white/20"></div>`).join('');
+$$('#colorPalette div').forEach(d=>d.onclick=()=>$('#notesColor').value=d.dataset.c);
+$('#notesSize').oninput=e=>$('#sizeLabel').textContent=e.target.value;
+$('#notesZoom').oninput=e=>{ const z=e.target.value/100; $('#zoomLabel').textContent=z.toFixed(1)+'x'; const canvasWrap=$('#notesCanvas').parentElement; canvasWrap.style.transform=`scale(${z})`; canvasWrap.style.transformOrigin='top left'; };
+// Increase undo history to 1000 (40x)
+hist=[]; redo=[]; function push(){ try{ hist.push(nctx.getImageData(0,0,nc.width,nc.height)); if(hist.length>1000) hist.shift(); }catch{} } setInterval(push,2000);
+// Template switcher
+$('#notesTemplate').onchange=e=>{ const v=e.target.value; const bg=$('#notesCanvas').parentElement; if(v==='Lined') bg.style.backgroundImage='repeating-linear-gradient(transparent,transparent 23px,#d2b48c 24px)'; else if(v==='Grid') bg.style.backgroundImage='linear-gradient(#d2b48c 1px,transparent 1px),linear-gradient(90deg,#d2b48c 1px,transparent 1px)'; else if(v==='Dotted') bg.style.backgroundImage='radial-gradient(#d2b48c 1px,transparent 1px)'; else if(v==='Blank') bg.style.backgroundImage='none'; else if(v==='Music') bg.style.backgroundImage='repeating-linear-gradient(transparent 0 18px,#000 19px,transparent 20px,transparent 38px,#000 39px)'; else if(v==='Isometric') bg.style.backgroundImage='linear-gradient(30deg,transparent 49%,#d2b48c 50%,transparent 51%),linear-gradient(-30deg,transparent 49%,#d2b48c 50%,transparent 51%)'; bg.style.backgroundSize=v==='Grid'?'24px 24px':v==='Dotted'?'16px 16px':'auto'; };
+// Image import (up to 40)
+let imgCount=0; $('#notesImage').onclick=()=>$('#imgInput').click(); $('#imgInput').onchange=e=>{ const f=e.target.files[0]; if(!f||imgCount>=40) return alert('Max 40 images'); imgCount++; const img=new Image(); img.onload=()=>{ nctx.drawImage(img,50,50,300,200); push(); }; img.src=URL.createObjectURL(f); };
+// Voice to text
+$('#notesVoice').onclick=()=>{ const rec=new (window.SpeechRecognition||window.webkitSpeechRecognition)(); rec.lang='hi-IN'; rec.onresult=ev=>{ $('#notesText').value += ' '+ev.results[0][0].transcript; }; rec.start(); };
+// Enhanced tools
+const originalMove = nc.onmousemove; // we will extend drawing
+let startPos=null;
+nc.addEventListener('mousedown',e=>{ startPos=np(e); if(['Line','Rectangle','Circle'].includes($('#notesTool').value)) nd=true; });
+nc.addEventListener('mouseup',e=>{ if(!startPos) return; const tool=$('#notesTool').value; const end=np(e); nctx.strokeStyle=$('#notesColor').value; nctx.lineWidth=$('#notesSize').value; nctx.globalCompositeOperation='source-over'; if(tool==='Line'){ nctx.beginPath(); nctx.moveTo(startPos.x,startPos.y); nctx.lineTo(end.x,end.y); nctx.stroke(); push(); } else if(tool==='Rectangle'){ nctx.strokeRect(startPos.x,startPos.y,end.x-startPos.x,end.y-startPos.y); push(); } else if(tool==='Circle'){ const r=Math.hypot(end.x-startPos.x,end.y-startPos.y); nctx.beginPath(); nctx.arc(startPos.x,startPos.y,r,0,7); nctx.stroke(); push(); } startPos=null; });
+// Highlighter, marker effects
+const oldDraw = nctx.stroke; // modify in mousemove handler already
+// Auto-save every 40 seconds
+setInterval(async()=>{ if(notesUnlocked && notesKey){ savePage(); const enc=await encryptData(pages,notesKey); localStorage.setItem('ct-notes-data',JSON.stringify(enc)); console.log('Auto-saved 40x'); } },40000);
+// 40 sticky colors
+const stickyColors=['#fffd8a','#ffb3ba','#baffc9','#bae1ff','#ffffba','#ffdfba','#e0bbe4','#957dad','#d291bc','#fec8d8','#ffdfd3','#c9c9ff','#b5ead7','#ffdac1','#e2f0cb','#c7ceea','#ff9aa2','#ffb7b2','#ffdac1','#e2f0cb','#b5ead7','#c7ceea','#f8b195','#f67280','#c06c84','#6c5b7b','#355c7d','#99b898','#fecea8','#ff847c','#e84a5f','#2a363b','#a8e6cf','#dcedc1','#ffd3b6','#ffaaa5','#ff8b94','#d4a5a5','#a8d8ea','#aa96da'];
+let stickyIdx=0;
+const origAddSticky = addSticky;
+addSticky = (t,x,y)=>{ const d=document.createElement('div'); d.className='sticky-note'; d.style.left=x+'px'; d.style.top=y+'px'; d.style.pointerEvents='auto'; d.style.background=stickyColors[stickyIdx%40]; stickyIdx++; d.contentEditable=true; d.innerText=t; $('#notesStickies').appendChild(d); d.focus(); };
+// Pre-create 40 pages option
+if(Object.keys(pages).length<5){ for(let i=2;i<=5;i++){ pages['page'+i]={text:'',drawing:null,stickies:[],title:'Page '+i}; } }
+
+// CYBER SEARCH ENGINE - 6 IN 1 PEAK
+const searchEngines = {
+  google: q => `https://www.google.com/search?q=${encodeURIComponent(q)}`,
+  bing: q => `https://www.bing.com/search?q=${encodeURIComponent(q)}`,
+  yahoo: q => `https://search.yahoo.com/search?p=${encodeURIComponent(q)}`,
+  wiki: q => `https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(q)}`,
+  duck: q => `https://duckduckgo.com/?q=${encodeURIComponent(q)}`,
+  onion: q => `https://ahmia.fi/search/?q=${encodeURIComponent(q)}`
+};
+
+function doCyberSearch(engine){
+  const q = $('#cyberSearchInput').value.trim();
+  if(!q) return;
+  const url = searchEngines[engine](q);
+  // 100% genuine - open in new tab
+  window.open(url, '_blank');
+  addXP(2);
+  // visual feedback
+  $('#searchBtn').textContent = '✓ OPENED';
+  setTimeout(()=>$('#searchBtn').textContent='SEARCH',1500);
+  // also show in console
+  console.log(`Cyber Search: ${engine.toUpperCase()} - ${q}`);
+}
+
+$('#searchBtn').onclick = ()=> doCyberSearch($('#engineSelect').value);
+$('#cyberSearchInput').onkeydown = e => { if(e.key==='Enter') doCyberSearch($('#engineSelect').value); };
+$$('.engine-quick').forEach(btn => btn.onclick = ()=> {
+  $('#engineSelect').value = btn.dataset.eng;
+  doCyberSearch(btn.dataset.eng);
+  btn.animate([{transform:'scale(1)'},{transform:'scale(1.3)'},{transform:'scale(1)'}],{duration:300});
+});
+
+// === PEAK-LEVEL AI INTERNET FRAMEWORKS - CHATGPT, META AI, COPILOT PRE-LOADED ===
+const aiFrameworks = {
+  chatgpt: q => `https://chatgpt.com/?q=${encodeURIComponent('PEAK LEVEL THINKING: '+q)}&model=gpt-4`,
+  metaai: q => `https://www.meta.ai/?q=${encodeURIComponent('Full peak-level detailed answer with deep reasoning: '+q)}`,
+  copilot: q => `https://copilot.microsoft.com/?q=${encodeURIComponent('Think step by step at peak level: '+q)}`
+};
+// Merge AI into existing search engines - nothing removed
+Object.assign(searchEngines, aiFrameworks);
+
+// Peak AI Launcher - opens all 3 for maximum thinking
+window.launchPeakAI = function(q){
+  q = q || $('#cyberSearchInput')?.value?.trim();
+  if(!q){ q = prompt('Duniya ki koi bhi cheez pucho bhai:'); if(!q) return; }
+  // Open all three AIs simultaneously for peak-level
+  window.open(aiFrameworks.chatgpt(q), '_blank');
+  window.open(aiFrameworks.metaai(q), '_blank');
+  window.open(aiFrameworks.copilot(q), '_blank');
+  addXP(10);
+  console.log('PEAK AI TRIPLE LAUNCH:', q);
+  // Auto calculation if math
+  if(/^[\d\s+\-*/().^%]+$/.test(q)){
+    try{ const ans = Function('"use strict";return ('+q.replace(/\^/g,'**')+')')(); setTimeout(()=>alert('Peak Calculation: '+q+' = '+ans),500); }catch{}
+  }
+};
+
+// Peak Prompt Writer - koi bhi prompt likhwao
+window.peakPrompt = function(topic){
+  topic = topic || $('#cyberSearchInput')?.value || 'general';
+  return `You are operating at PEAK-LEVEL intelligence with full internet frameworks pre-loaded (ChatGPT, Meta AI, Copilot). Task: ${topic}. Instructions: 1) Think deeply step-by-step 2) Verify with latest knowledge 3) Give exact, comprehensive answer 4) Show calculations if needed 5) Provide actionable steps 6) No fluff, only peak accuracy.`;
+};
+
+// Peak Calculator - koi bhi calculation
+window.peakCalculate = function(expr){
+  try{
+    const clean = expr.replace(/[^0-9+\-*/().%^eE\s-]/g,'').replace(/\^/g,'**');
+    const result = Function('"use strict";return ('+clean+')')();
+    addXP(3);
+    return result;
+  }catch(e){ return 'Calculation error bhai' }
+};
+
+// Auto-enhance search input - Enter+Shift opens Peak AI
+$('#cyberSearchInput').addEventListener('keydown', e=>{
+  if(e.key==='Enter' && e.shiftKey){ e.preventDefault(); launchPeakAI(); }
+});
+
+
+$('#notesUndo').onclick=()=>{ if(hist.length>1){ redo.push(hist.pop()); nctx.putImageData(hist[hist.length-1],0,0); } };
+$('#notesRedo').onclick=()=>{ if(redo.length){ const i=redo.pop(); hist.push(i); nctx.putImageData(i,0,0); } };
+$('#notesClear').onclick=()=>{ nctx.clearRect(0,0,nc.width,nc.height); push(); };
+$('#notesSticky').onclick=()=>addSticky('Yahan likho...',70,70);
+function addSticky(t,x,y){ const d=document.createElement('div'); d.className='sticky-note'; d.style.left=x+'px'; d.style.top=y+'px'; d.style.pointerEvents='auto'; d.contentEditable=true; d.innerText=t; $('#notesStickies').appendChild(d); d.focus(); }
+$('#saveNotesData').onclick=async()=>{ savePage(); const enc=await encryptData(pages,notesKey); localStorage.setItem('ct-notes-data',JSON.stringify(enc)); addXP(15); alert('Encrypted save ho gaya!'); };
+$('#saveNotesPNG').onclick=()=>{ const a=document.createElement('a'); a.href=nc.toDataURL(); a.download='Personal-Notes.png'; a.click(); };
+$('#saveNotesPDF').onclick=()=>{ const {jsPDF}=window.jspdf; const pdf=new jsPDF({orientation:'landscape'}); pdf.addImage(nc.toDataURL(),'PNG',10,10,277,140); pdf.setFontSize(11); pdf.text($('#notesText').value.split('\n'),10,160); pdf.save('Personal-Notes.pdf'); };
+
+// Init
+renderChat(); updateOnline();
+</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>
